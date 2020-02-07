@@ -6,5 +6,42 @@
   </head>
 <body>
 	<h2>The TODO List App</h2>	
+	<form>
+	 <label>
+     Task Name:
+     <input id="input_add_task" type="text" placeholder="What?">
+    </label>
+    <button id="bt_add_task" type="button">
+       Add Task
+   </button>
+</form>
+<ul id ="container">
+	<li>
+    <label>
+      <input type="checkbox">
+      Collect trash
+    </label>
+  </li>
+</ul>
+
+ <script>
+    var addTaskButton = document.getElementById("bt_add_task");
+    var i=0;
+    addTaskButton.addEventListener('click', function(event) {
+      let newTaskInput = document.getElementById("input_add_task");
+      var taskName = newTaskInput.value;
+      addItem(i, taskName)
+      newTaskInput.value = "";
+    });
+
+    function addItem(i, name){
+    	var ul = document.getElementById("container");
+    	let li = document.createElement('li');
+    	li.innerHTML = '<input type="checkbox" id="check' + i + '" name="check' + i + '"><label for="check' + i + '">'+ name +'</label>';       
+		ul.appendChild(li);
+    }
+  </script>
+
 </body>
 </html>  
+
