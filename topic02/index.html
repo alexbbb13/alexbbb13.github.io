@@ -25,31 +25,57 @@
 </ul>
 
  <script>
-    let addTaskButton = document.getElementById("bt_add_task");
+ 	const TODO_KEY = "toDoListSerialized";
+    const addTaskButton = document.getElementById("bt_add_task");
     let i=0;
-    let toDoList = new Array();
     const toDoItem = {
     	  taskName: "",
   		  checked: false
   		};
-	addTaskButton.addEventListener('click', function(event) {
+	let toDoList = [];
+    const result=loadList();
+    if (result===null || result===undefined) {
+    	//Nothing, an empty todolist is already created
+    	} else {
+    		toDoList = result;
+    		console.log("LOADED, size="+toDoList.length);
+    		const iterator = toDoList.keys();
+    		for (const key of iterator) {
+ 			    console.log(key);
+ 			    //Making the current index equal the last key plus one
+ 			    i = key + 1;   //Not very elegant, but working. I will implement 
+ 			    //the random item deletion later, so the keys may look like 
+ 			    // 1, 8, 12 
+ 			    const item = toDoList[key];
+ 			    displayItem(key, item.taskName, item.checked)
+			}	
+    	}
+
+    addTaskButton.addEventListener('click', function(event) {
       let newTaskInput = document.getElementById("input_add_task");
       let taskName = newTaskInput.value;
-      addItem(i, taskName);
+      displayItem(i, taskName, false);
       addElementToList(i, taskName);
       saveList();
       i++;
       newTaskInput.value = "";
     });
 
-    function addItem(i, name){
+    function displayItem(pos, name, setChecked){
     	let ul = document.getElementById("container");
     	let li = document.createElement('li');
-    	li.innerHTML = '<input type="checkbox" id="check' + i + '" name="check' + i +'"" onchange="toggleCheckbox(this, '+i+')"'+'><label for="check' + i + '">'+ name +'</label>';       
+    	li.innerHTML = '<input type="checkbox" id="check' + pos + '" name="check' + pos +'" onchange="toggleCheckbox(this, '+pos+')"'+'><label for="check' + pos + '">'+ name +'</label>';       
 		ul.appendChild(li);
+		if (setChecked) {
+			toggleCheckbox(document.getElementById('check' + pos), pos)
+		}
 	}
 	function toggleCheckbox(element, pos) {
+		if(!isCheckbox(element)) {
+			alert("not checkbox");
+		}
 		let label = element.nextSibling;
+		//isChecked(pos)) { !element.checked
 		if(isChecked(pos)) {
 			label.style.setProperty("text-decoration", "none");
 			setChecked(pos,false);
@@ -59,6 +85,11 @@
 		}
 		saveList();
  		console.log("checked label="+label);
+    }
+
+    function isCheckbox (element) {
+      return element instanceof HTMLInputElement 
+      && element.getAttribute('type') == 'checkbox'
     }
 
     function addElementToList(pos, name) {
@@ -74,7 +105,6 @@
     }
 
     function isChecked(pos) {
-    	console.log("isChecked(pos)="+pos);
     	//Uses a global items list
     	return toDoList[pos].checked
     }
@@ -87,7 +117,20 @@
     function saveList() {
     	//Uses a global items list
     	console.log("saving="+JSON.stringify(toDoList));
-    	//window.localStorage.setItem("toDoListSerialized", JSON.stringify(toDoList));
+    	window.localStorage.setItem(TODO_KEY, JSON.stringify(toDoList));
+    }
+
+    function loadList() {
+    	//Uses a global items list
+    	let s = window.localStorage.getItem(TODO_KEY);
+    	var result;
+    	try {
+    		 result = JSON.parse(s);
+    		console.log("Successs!");	
+    	} catch (e) {
+    		console.log("parse error");	
+    	}
+    	return result;
     }
 
   </script>
