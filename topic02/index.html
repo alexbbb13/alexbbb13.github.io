@@ -25,21 +25,71 @@
 </ul>
 
  <script>
-    var addTaskButton = document.getElementById("bt_add_task");
-    var i=0;
-    addTaskButton.addEventListener('click', function(event) {
+    let addTaskButton = document.getElementById("bt_add_task");
+    let i=0;
+    let toDoList = new Array();
+    const toDoItem = {
+    	  taskName: "",
+  		  checked: false
+  		};
+	addTaskButton.addEventListener('click', function(event) {
       let newTaskInput = document.getElementById("input_add_task");
-      var taskName = newTaskInput.value;
-      addItem(i, taskName)
+      let taskName = newTaskInput.value;
+      addItem(i, taskName);
+      addElementToList(i, taskName);
+      saveList();
+      i++;
       newTaskInput.value = "";
     });
 
     function addItem(i, name){
-    	var ul = document.getElementById("container");
+    	let ul = document.getElementById("container");
     	let li = document.createElement('li');
-    	li.innerHTML = '<input type="checkbox" id="check' + i + '" name="check' + i + '"><label for="check' + i + '">'+ name +'</label>';       
+    	li.innerHTML = '<input type="checkbox" id="check' + i + '" name="check' + i +'"" onchange="toggleCheckbox(this, '+i+')"'+'><label for="check' + i + '">'+ name +'</label>';       
 		ul.appendChild(li);
+	}
+	function toggleCheckbox(element, pos) {
+		let label = element.nextSibling;
+		if(isChecked(pos)) {
+			label.style.setProperty("text-decoration", "none");
+			setChecked(pos,false);
+		} else {
+			label.style.setProperty("text-decoration", "line-through");
+			setChecked(pos,true);
+		}
+		saveList();
+ 		console.log("checked label="+label);
     }
+
+    function addElementToList(pos, name) {
+    	//Uses a global items list
+    	toDoList[pos]=createToDoItem(name);
+    }
+
+    function createToDoItem(name) {
+    	const ret = Object.create(toDoItem);
+    	ret.taskName=name; 
+    	ret.checked=false;
+    	return ret;
+    }
+
+    function isChecked(pos) {
+    	console.log("isChecked(pos)="+pos);
+    	//Uses a global items list
+    	return toDoList[pos].checked
+    }
+
+    function setChecked(pos, status) {
+    	//Uses a global items list
+    	toDoList[pos].checked = status
+    }
+
+    function saveList() {
+    	//Uses a global items list
+    	console.log("saving="+JSON.stringify(toDoList));
+    	//window.localStorage.setItem("toDoListSerialized", JSON.stringify(toDoList));
+    }
+
   </script>
 
 </body>
