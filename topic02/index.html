@@ -16,12 +16,6 @@
    </button>
 </form>
 <ul id ="container">
-	<li>
-    <label>
-      <input type="checkbox">
-      Collect trash
-    </label>
-  </li>
 </ul>
 
  <script>
@@ -36,7 +30,7 @@
     const result=loadList();
     if (result===null || result===undefined) {
     	//Nothing, an empty todolist is already created
-    	} else {
+    } else {
     		toDoList = result;
     		console.log("LOADED, size="+toDoList.length);
     		const iterator = toDoList.keys();
@@ -47,11 +41,13 @@
  			    //the random item deletion later, so the keys may look like 
  			    // 1, 8, 12 
  			    const item = toDoList[key];
+ 			    //Displaying loaded items
  			    displayItem(key, item.taskName, item.checked)
+ 			    //Setting checked items
  			    setCheckboxStatus(document.getElementById('check' + key),  
  			    	item.checked);
- 			}
-		}
+ 		    }
+	}
     addTaskButton.addEventListener('click', function(event) {
       let newTaskInput = document.getElementById("input_add_task");
       let taskName = newTaskInput.value;
@@ -70,18 +66,8 @@
 	}
 
 	function toggleCheckbox(element, pos) {
-		if(!isCheckbox(element)) {
-			alert("not checkbox");
-		}
-		let label = element.nextSibling;
-		//isChecked(pos)) { !element.checked
-		if(isChecked(pos)) {
-			label.style.setProperty("text-decoration", "none");
-			setChecked(pos,false);
-		} else {
-			label.style.setProperty("text-decoration", "line-through");
-			setChecked(pos,true);
-		}
+		setCheckboxStatus(element, element.checked);
+		setChecked(pos, element.checked)
 		saveList();
  		console.log("checked label="+label);
     }
@@ -91,14 +77,14 @@
 			alert("not checkbox");
 		}
 		let label = element.nextSibling;
-		//isChecked(pos)) { !element.checked
 		if(status) {
 			label.style.setProperty("text-decoration", "line-through");
+			element.checked = true
 		} else {
 			label.style.setProperty("text-decoration", "none");
+			element.checked = false
 		}
     }
-
 
     function isCheckbox (element) {
       return element instanceof HTMLInputElement 
@@ -129,7 +115,6 @@
 
     function saveList() {
     	//Uses a global items list
-    	console.log("saving="+JSON.stringify(toDoList));
     	window.localStorage.setItem(TODO_KEY, JSON.stringify(toDoList));
     }
 
