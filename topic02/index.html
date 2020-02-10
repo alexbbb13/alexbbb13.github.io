@@ -48,9 +48,10 @@
  			    // 1, 8, 12 
  			    const item = toDoList[key];
  			    displayItem(key, item.taskName, item.checked)
-			}	
-    	}
-
+ 			    setCheckboxStatus(document.getElementById('check' + key),  
+ 			    	item.checked);
+ 			}
+		}
     addTaskButton.addEventListener('click', function(event) {
       let newTaskInput = document.getElementById("input_add_task");
       let taskName = newTaskInput.value;
@@ -61,15 +62,13 @@
       newTaskInput.value = "";
     });
 
-    function displayItem(pos, name, setChecked){
+    function displayItem(pos, name){
     	let ul = document.getElementById("container");
     	let li = document.createElement('li');
     	li.innerHTML = '<input type="checkbox" id="check' + pos + '" name="check' + pos +'" onchange="toggleCheckbox(this, '+pos+')"'+'><label for="check' + pos + '">'+ name +'</label>';       
 		ul.appendChild(li);
-		if (setChecked) {
-			toggleCheckbox(document.getElementById('check' + pos), pos)
-		}
 	}
+
 	function toggleCheckbox(element, pos) {
 		if(!isCheckbox(element)) {
 			alert("not checkbox");
@@ -86,6 +85,20 @@
 		saveList();
  		console.log("checked label="+label);
     }
+
+    function setCheckboxStatus(element, status) {
+		if(!isCheckbox(element)) {
+			alert("not checkbox");
+		}
+		let label = element.nextSibling;
+		//isChecked(pos)) { !element.checked
+		if(status) {
+			label.style.setProperty("text-decoration", "line-through");
+		} else {
+			label.style.setProperty("text-decoration", "none");
+		}
+    }
+
 
     function isCheckbox (element) {
       return element instanceof HTMLInputElement 
