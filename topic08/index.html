@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Topic 08 - Document Object Model</title>
+    <link rel="stylesheet" href="style.css" />
+    <!--
+      : Document Object Model - Demonstrate fluency in DOM Manipulation Using createElement, appendChild, insertBefore, removeChild, etc..
+      https://www.sitepoint.com/dom-manipulation-vanilla-javascript-no-jquery/
+    -->
+  </head>
+<body>
+	<h2>CreateElement</h2>	
+	<button id="bt_create_p">Create Paragraph</button>
+  <button id="bt_create_b">Create Button</button>
+
+  <button id="bt_remove_last">Remove last</button>
+  <button id="bt_remove_first">Remove first</button>
+  <button id="bt_insert">Insert Button before</button>
+  <button id="bt_insert">Remove All Buttons</button>
+
+
+  <div id ="container"></div>
+    <script>
+      let buttonCreateP = document.getElementById("bt_create_p");
+      let buttonCreateB = document.getElementById("bt_create_b");
+      let buttonId = 0
+
+      let buttonRemoveFirst = document.getElementById("bt_remove_first");
+      let buttonRemoveLast = document.getElementById("bt_remove_last");
+      let buttonInsert = document.getElementById("bt_insert");
+
+
+      let buttonTouch = document.getElementById("bt_touch");
+      let buttonMouseTouch = document.getElementById("bt_mouse");
+      //Adiing first button listener
+      buttonCreateP.addEventListener("click", () => {
+      createParagraph("This is a newly created paragraph");});
+      buttonCreateB.addEventListener("click", () => {
+      createButton("Button "+buttonId++);});
+
+      //Adding second button listener
+      buttonRemoveFirst.addEventListener("click", () => {
+      removeFirst();});
+      buttonRemoveLast.addEventListener("click", () => {
+      removeLast();});
+
+
+     
+    
+    function createParagraph(text){
+      let divElement = document.getElementById("container");
+      let paragraph = document.createElement('p');
+      paragraph.innerHTML = text;       
+    divElement.appendChild(paragraph);
+  }
+
+     function createButton(text){
+      let divElement = document.getElementById("container");
+      let el = document.createElement('button');
+      el.innerHTML = text;       
+      divElement.appendChild(el);
+  }   
+
+  function removeFirst(){
+      let divElement = document.getElementById("container");
+      let descendants = Array.from(divElement.children); //Array.from(divElement.querySelectorAll("*"));
+      if (descendants.length > 0) {
+          divElement.removeChild(divElement.firstChild);
+      } 
+  }
+
+  function removeLast(){
+      let divElement = document.getElementById("container");
+      divElement.removeFirst
+      let descendants = Array.from(divElement.children); //Array.from(divElement.querySelectorAll("*"));
+      if (descendants.length > 0) {
+          let last = descendants[descendants.length-1];
+          divElement.removeChild(last);
+          //console.log("Check type = "+last.type);
+          if(last.type == 'submit') {
+              console.log("This is button!, type = "+last.type);
+              buttonId--;
+          }  
+      } 
+  }
+
+  </script>
+  
+</body>
+</html>  
+

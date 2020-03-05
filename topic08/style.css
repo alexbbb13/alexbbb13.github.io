@@ -1,0 +1,59 @@
+.zoom {
+  transform: scale(1.2); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  transition: transform .2s; /* Animation */
+}
+
+.squeeze {
+  transform: scale(1); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  transition: transform .2s; /* Animation */
+}
+
+#square {
+  width: 100px;
+  height: 100px;
+  background: blue;
+  transition: width 2s;
+}
+
+#square:hover {
+  width: 300px;
+}
+
+#anim {
+  width: 100px;
+  height: 100px;
+  background: green;
+  transition: width 2s;
+}
+
+#anim:hover 
+{
+  -webkit-animation: flash 1s ease 3;
+  -moz-animation: flash 1s ease 3;
+  -ms-animation: flash 1s ease 3;
+  -o-animation: flash 1s ease 3;
+  animation: flash 1s ease 3;
+}
+
+/* animation */
+@-webkit-keyframes flash {
+  50% { opacity: 0; }
+}
+
+@-moz-keyframes flash {
+  50% { opacity: 0; }
+}
+
+@-ms-keyframes flash {
+  50% { opacity: 0; }
+}
+
+@-o-keyframes flash {
+  50% { opacity: 0; }
+}
+
+@keyframes flash {
+  50% { opacity: 0; }
+}
+
+
