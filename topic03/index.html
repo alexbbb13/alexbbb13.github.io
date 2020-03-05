@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Topic 06 - JavaScript Events</title>
+    <link rel="stylesheet" href="style.css" />
+    <!--
+      Standard JavaScript Events Including those for Mobile Devices ( Ex. onTouchBegin, onLoad, etc.) and Animation and Transition Events
+    -->
+  </head>
+<body>
+	<h2>Handling simple events</h2>	
+	<button>Click me</button> 
+  <button id="bt_mouseover">Put mouse over to clear</button>
+  <div id ="container"></div>
+  <h2>Handling onTouchEnter</h2> 
+  <button id="bt_touch">Touch me by finger</button> 
+  <h2>Handling onLoad</h2> 
+  <div id ="container_onload"></div>
+  <h2>Transition callbacks</h2> 
+  <h6>Move the mouse over the blue square</h6>
+  <div id ="container_trans"></div>
+  <div id ="square"></div>
+  <h2>Animation callbacks</h2> 
+  <h6>Move the mouse over the green square</h6>
+  <div id ="container_anim"></div>
+  <div id ="anim"></div>
+    <script>
+      let buttonClick = document.querySelector("button");
+      let buttonMouseOver = document.getElementById("bt_mouseover");
+      let buttonTouch = document.getElementById("bt_touch");
+      //Adiing first button listener
+      buttonClick.addEventListener("click", () => {
+      printToContainer("Knock-knock");});
+      //Adding second button listener
+      buttonMouseOver.addEventListener("mouseover", () => {
+      clearContainer();});
+      //Adiing touch button event listener
+      buttonTouch.addEventListener("touchenter", () => {  //mousedown for testing
+      enlargeTouchButton();});
+      buttonTouch.addEventListener("touchleave", () => {  //mouseup for testing
+      setsmallTouchButton();});
+      //inline function
+      window.onload = function(){
+        let divElement = document.getElementById("container_onload");
+        divElement.innerHTML = "Window loaded"
+      };
+
+      const message = document.getElementById("container_trans");
+      const el = document.getElementById('square');
+
+      el.addEventListener('transitionrun', function() {
+        message.textContent = 'transitionrun fired';
+      });
+
+      el.addEventListener('transitionstart', function() {
+        message.textContent = 'transitionstart fired';
+      });
+
+      el.addEventListener('transitioncancel', function() {
+        message.textContent = 'transitioncancel fired'; 
+      }); 
+
+      el.addEventListener('transitionend', function() {
+        message.textContent = 'transitionend fired'; 
+      });
+
+
+       const pfx = ["webkit", "moz", "MS", "o", ""];
+        function PrefixedEvent(element, type, callback) {
+        for (var p = 0; p < pfx.length; p++) {
+          if (!pfx[p]) type = type.toLowerCase();
+          element.addEventListener(pfx[p]+type, callback, false);
+          }
+        }
+      var anim = document.getElementById("anim");
+      PrefixedEvent(anim, "AnimationStart", animationStartListener);
+      PrefixedEvent(anim, "AnimationIteration", animationIterListener);
+      PrefixedEvent(anim, "AnimationEnd", animationEndListener);
+
+    
+    function printToContainer(text){
+      let divElement = document.getElementById("container");
+      let paragraph = document.createElement('p');
+      paragraph.innerHTML = text;       
+    divElement.appendChild(paragraph);
+  }  
+
+  function clearContainer(){
+      let divElement = document.getElementById("container");
+      divElement.innerHTML = ""; 
+  }
+
+  function enlargeTouchButton(){
+      let button = document.getElementById("bt_touch");
+      button.classList.add('zoom');
+      button.classList.remove('squeeze');
+  }
+
+  function setsmallTouchButton(){
+      let button = document.getElementById("bt_touch");
+      button.classList.add('squeeze');
+      button.classList.remove('zoom');
+  }
+
+  function animationStartListener(){
+      let anim = document.getElementById("container_anim");
+      anim.innerHTML = "animation start"
+  }
+
+  function animationIterListener(){
+      let anim = document.getElementById("container_anim");
+      anim.innerHTML = "animation iteration"
+  }
+  function animationEndListener(){
+      let anim = document.getElementById("container_anim");
+      anim.innerHTML = "animation end"
+  }
+
+  </script>
+  
+</body>
+</html>  
+
