@@ -14,7 +14,7 @@
   <button id="bt_mouseover">Put mouse over to clear</button>
   <div id ="container"></div>
   <h2>Handling onTouchEnter</h2> 
-  <button id="bt_touch">Touch me by finger</button> 
+  <button id="bt_touch">Touch me by the finger</button> 
   <h2>Handling onLoad</h2> 
   <div id ="container_onload"></div>
   <h2>Transition callbacks</h2> 
@@ -66,17 +66,17 @@
       });
 
 
-       const pfx = ["webkit", "moz", "MS", "o", ""];
-        function PrefixedEvent(element, type, callback) {
+      const pfx = ["webkit", "moz", "MS", "o", ""];
+      function prefixedEvent(element, type, callback) {
         for (var p = 0; p < pfx.length; p++) {
           if (!pfx[p]) type = type.toLowerCase();
           element.addEventListener(pfx[p]+type, callback, false);
           }
         }
       var anim = document.getElementById("anim");
-      PrefixedEvent(anim, "AnimationStart", animationStartListener);
-      PrefixedEvent(anim, "AnimationIteration", animationIterListener);
-      PrefixedEvent(anim, "AnimationEnd", animationEndListener);
+      prefixedEvent(anim, "AnimationStart", animationStartListener);
+      prefixedEvent(anim, "AnimationIteration", animationIterListener);
+      prefixedEvent(anim, "AnimationEnd", animationEndListener);
 
     
     function printToContainer(text){
