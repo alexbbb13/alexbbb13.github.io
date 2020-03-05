@@ -14,7 +14,8 @@
   <button id="bt_mouseover">Put mouse over to clear</button>
   <div id ="container"></div>
   <h2>Handling onTouchEnter</h2> 
-  <button id="bt_touch">Touch me by the finger</button> 
+  <button id="bt_touch">Touch me by the finger</button>
+  <button id="bt_mouse">Touch me by the mouse</button>  
   <h2>Handling onLoad</h2> 
   <div id ="container_onload"></div>
   <h2>Transition callbacks</h2> 
@@ -29,6 +30,7 @@
       let buttonClick = document.querySelector("button");
       let buttonMouseOver = document.getElementById("bt_mouseover");
       let buttonTouch = document.getElementById("bt_touch");
+      let buttonMouseTouch = document.getElementById("bt_mouse");
       //Adiing first button listener
       buttonClick.addEventListener("click", () => {
       printToContainer("Knock-knock");});
@@ -37,9 +39,13 @@
       clearContainer();});
       //Adiing touch button event listener
       buttonTouch.addEventListener("touchenter", () => {  //mousedown for testing
-      enlargeTouchButton();});
+      enlargeTouchButton("bt_touch");});
       buttonTouch.addEventListener("touchleave", () => {  //mouseup for testing
-      setsmallTouchButton();});
+      setsmallTouchButton("bt_touch");});
+      buttonMouseTouch.addEventListener("mousedown", () => {  //mousedown for testing
+      enlargeTouchButton("bt_mouse");});
+      buttonMouseTouch.addEventListener("mouseup", () => {  //mouseup for testing
+      setsmallTouchButton("bt_mouse");});
       //inline function
       window.onload = function(){
         let divElement = document.getElementById("container_onload");
@@ -91,14 +97,14 @@
       divElement.innerHTML = ""; 
   }
 
-  function enlargeTouchButton(){
-      let button = document.getElementById("bt_touch");
+  function enlargeTouchButton(id){
+      let button = document.getElementById(id);
       button.classList.add('zoom');
       button.classList.remove('squeeze');
   }
 
-  function setsmallTouchButton(){
-      let button = document.getElementById("bt_touch");
+  function setsmallTouchButton(id){
+      let button = document.getElementById(id);
       button.classList.add('squeeze');
       button.classList.remove('zoom');
   }
