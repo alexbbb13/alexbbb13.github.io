@@ -16,8 +16,8 @@
 
   <button id="bt_remove_last">Remove last</button>
   <button id="bt_remove_first">Remove first</button>
-  <button id="bt_insert">Insert Button before</button>
-  <button id="bt_insert">Remove All Buttons</button>
+  <button id="bt_insert_before">Insert Button before</button>
+  <button id="bt_remove_all">Remove All Buttons</button>
 
 
   <div id ="container"></div>
@@ -28,12 +28,11 @@
 
       let buttonRemoveFirst = document.getElementById("bt_remove_first");
       let buttonRemoveLast = document.getElementById("bt_remove_last");
-      let buttonInsert = document.getElementById("bt_insert");
+      let buttonInsert = document.getElementById("bt_insert_before");
+      let buttonRemoveAll = document.getElementById("bt_remove_all");
 
 
-      let buttonTouch = document.getElementById("bt_touch");
-      let buttonMouseTouch = document.getElementById("bt_mouse");
-      //Adiing first button listener
+      //Adiing button listeners
       buttonCreateP.addEventListener("click", () => {
       createParagraph("This is a newly created paragraph");});
       buttonCreateB.addEventListener("click", () => {
@@ -44,6 +43,10 @@
       removeFirst();});
       buttonRemoveLast.addEventListener("click", () => {
       removeLast();});
+      buttonInsert.addEventListener("click", () => {
+      insertBefore("Button "+buttonId++);});
+      buttonRemoveAll.addEventListener("click", () => {
+      removeAllButtons();});
 
 
      
@@ -83,6 +86,23 @@
               buttonId--;
           }  
       } 
+  }
+
+  function removeAllButtons(){
+      let divElement = document.getElementById("container");
+      let descendants = Array.from(divElement.children).filter(function(currentValue) { 
+          return(currentValue.type == 'submit');
+      });
+      while(descendants) {
+        divElement.removeChild(descendants.pop())
+      }
+  }
+
+  function insertBefore(text){
+      let divElement = document.getElementById("container");
+      let el = document.createElement('button');
+      el.innerHTML = text;       
+      divElement.insertBefore(el, divElement.childNodes[0]);
   }
 
   </script>
