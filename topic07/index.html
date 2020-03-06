@@ -171,7 +171,7 @@ data/2.5/weather?zip=94206,us&appid=39ca02cbc99907c370f58cb165b85be9
 	<h2>Enter your ZIP code in United States, and get the latest weather</h2>	
   <form id ="zipForm" method="post">
   Name: <input type="text" name="zip" id="zip">
-  <input type="submit" value="Submit">
+  <input type="submit" value="Get weather">
 </form>
 
   <div id ="container"></div>
@@ -204,9 +204,12 @@ data/2.5/weather?zip=94206,us&appid=39ca02cbc99907c370f58cb165b85be9
           }
         };
         //At first I tried direct access, but I have forgot about CORS (Cross origin script prevention in browser)
-        //Tried to use the so-called CORS proxy, which allows 
-        xhttp.open("GET", 'https://crossorigin.me/http://api.openweathermap.org/data/2.5/weather?zip='+zip+',us&appid=39ca02cbc99907c370f58cb165b85be9', true);
-        //The CORS part should be filled after "open"
+        //Tried to use the so-called CORS proxy, which responds with the header
+        //Access-Control-Allow-Origin: * that allows the browser to issue and to accept cross-site requests
+        //https://crossorigin.me/ - DID NOT WORK
+        //https://cors-anywhere.herokuapp.com/ - worked
+        //https://medium.com/@dtkatz/3-ways-to-fix-the-cors-error-and-how-access-control-allow-origin-works-d97d55946d9
+        xhttp.open("GET", 'https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/weather?zip='+zip+',us&appid=39ca02cbc99907c370f58cb165b85be9', true);
         xhttp.send();
     }   
 
