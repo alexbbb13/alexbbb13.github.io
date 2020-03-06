@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Topic 07 - AJAX</title>
+    <link rel="stylesheet" href="style.css" />
+    <!--
+      Fluency Evidence: AJAX
+      Using XMLHTTPRequest to Consume a JSON Web Service
+
+      You can call by city name or city name, state and country code. API responds with a list of results that match a searching word.
+API call:
+
+api.openweathermap.org/data/2.5/weather?q={city name}&appid={your api key}
+
+api.openweathermap.org/data/2.5/weather?q={city name},{state}&appid={your api key}
+
+api.openweathermap.org/data/2.5/weather?q={city name},{state},{country code}&appid={your api key}
+
+{"coord": { "lon": 139,"lat": 35},
+  "weather": [
+    {
+      "id": 800,
+      "main": "Clear",
+      "description": "clear sky",
+      "icon": "01n"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 281.52,
+    "feels_like": 278.99,
+    "temp_min": 280.15,
+    "temp_max": 283.71,
+    "pressure": 1016,
+    "humidity": 93
+  },
+  "wind": {
+    "speed": 0.47,
+    "deg": 107.538
+  },
+  "clouds": {
+    "all": 2
+  },
+  "dt": 1560350192,
+  "sys": {
+    "type": 3,
+    "id": 2019346,
+    "message": 0.0065,
+    "country": "JP",
+    "sunrise": 1560281377,
+    "sunset": 1560333478
+  },
+  "timezone": 32400,
+  "id": 1851632,
+  "name": "Shuzenji",
+  "cod": 200
+}
+
+By ZIP code
+Description:
+
+Please note if country is not specified then the search works for USA as a default.
+API call:
+api.openweathermap.org/data/2.5/weather?zip={zip code},{country code}&appid={your api key}
+Examples of API calls:
+
+api.openweathermap.org/data/2.5/weather?zip=94040,us
+Parameters:
+
+zip zip code
+API response:
+
+{
+  "coord": {"lon": -122.08,"lat": 37.39},
+  "weather": [
+    {
+      "id": 800,
+      "main": "Clear",
+      "description": "clear sky",
+      "icon": "01d"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 282.55,
+    "feels_like": 281.86,
+    "temp_min": 280.37,
+    "temp_max": 284.26,
+    "pressure": 1023,
+    "humidity": 100
+  },
+  "visibility": 16093,
+  "wind": {
+    "speed": 1.5,
+    "deg": 350
+  },
+  "clouds": {
+    "all": 1
+  },
+  "dt": 1560350645,
+  "sys": {
+    "type": 1,
+    "id": 5122,
+    "message": 0.0139,
+    "country": "US",
+    "sunrise": 1560343627,
+    "sunset": 1560396563
+  },
+  "timezone": -25200,
+  "id": 420006353,
+  "name": "Mountain View",
+  "cod": 200
+}
+
+
+{
+  "coord": {
+    "lon": -122.08,
+    "lat": 37.39
+  },
+  "weather": [
+    {
+      "id": 800,
+      "main": "Clear",
+      "description": "clear sky",
+      "icon": "01d"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 282.55,
+    "feels_like": 281.86,
+    "temp_min": 280.37,
+    "temp_max": 284.26,
+    "pressure": 1023,
+    "humidity": 100
+  },
+  "visibility": 16093,
+  "wind": {
+    "speed": 1.5,
+    "deg": 350
+  },
+  "clouds": {
+    "all": 1
+  },
+  "dt": 1560350645,
+  "sys": {
+    "type": 1,
+    "id": 5122,
+    "message": 0.0139,
+    "country": "US",
+    "sunrise": 1560343627,
+    "sunset": 1560396563
+  },
+  "timezone": -25200,
+  "id": 420006353,
+  "name": "Mountain View",
+  "cod": 200
+}
+
+https://openweathermap.org/current
+
+39ca02cbc99907c370f58cb165b85be9
+
+http://api.openweathermap.org/
+data/2.5/weather?zip=94206,us&appid=39ca02cbc99907c370f58cb165b85be9
+    -->
+  </head>
+<body>
+	<h2>Enter your ZIP code in United States, and get the latest weather</h2>	
+  <form id ="zipForm" method="post">
+  Name: <input type="text" name="zip" id="zip">
+  <input type="submit" value="Submit">
+</form>
+
+  <div id ="container"></div>
+
+    <script>
+      document.querySelector("#zipForm").addEventListener("submit", function(e){
+        e.preventDefault();    //stop form from submitting
+        let zip = document.getElementById("zip");
+        console.log(zip.value);
+        fillDataAsync(zip.value)
+    });
+   
+    
+    function createParagraph(text){
+      console.log("Create Paragraph")
+      console.log(text)
+      // let divElement = document.getElementById("container");
+      // let paragraph = document.createElement('p');
+      // paragraph.innerHTML = text;       
+      // divElement.appendChild(paragraph);
+
+    }
+
+     function fillDataAsync(zip){
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+           // Typical action to be performed when the document is ready:
+           createParagraph(xhttp.responseText);
+          }
+        };
+        //At first I tried direct access, but I have forgot about CORS (Cross origin script prevention in browser)
+        //Tried to use the so-called CORS proxy, which allows 
+        xhttp.open("GET", 'https://crossorigin.me/http://api.openweathermap.org/data/2.5/weather?zip='+zip+',us&appid=39ca02cbc99907c370f58cb165b85be9', true);
+        //The CORS part should be filled after "open"
+        xhttp.send();
+    }   
+
+  </script>
+  
+</body>
+</html>  
+
