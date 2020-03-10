@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Topic 09,10,11,12,13 - Anomations, Transitions, Transformations</title>
+    <link rel="stylesheet" href="style.css" />
+   
+  </head>
+<body>
+	<h2>Transitions</h2>
+  <div class="transitions_demo">	
+      <div id="div1">linear</div>
+      <div id="div2">ease</div>
+      <div id="div3">ease-in</div>
+      <div id="div4">ease-out</div>
+      <div id="div5">ease-in-out</div>
+  </div>
+	<button id="bt_transitions_race">Click to start race</button> 
+  <button id="bt_mouseover">Put mouse over to restart</button>
+
+  <div id ="container"></div>
+  <h2>Handling onTouchEnter</h2> 
+  <button id="bt_touch">Touch me by the finger</button>
+  <button id="bt_mouse">Touch me by the mouse</button>  
+  <h2>Handling onLoad</h2> 
+  <div id ="container_onload"></div>
+  <h2>Transition callbacks</h2> 
+  <h6>Move the mouse over the blue square</h6>
+  <div id ="container_trans"></div>
+  <div id ="square"></div>
+  <h2>Animation callbacks</h2> 
+  <h6>Move the mouse over the green square</h6>
+  <div id ="container_anim"></div>
+  <div id ="anim"></div>
+  <h2>Animation with negative time</h2> 
+  <div class="animations_demo1">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+    <script>
+      let buttonClick = document.getElementById("bt_transitions_race");
+      let buttonMouseOver = document.getElementById("bt_mouseover");
+      let buttonTouch = document.getElementById("bt_touch");
+      let buttonMouseTouch = document.getElementById("bt_mouse");
+      //Adiing first button listener
+      buttonClick.addEventListener("click", () => {
+        let divs = document.querySelectorAll('.transitions_demo');
+        for (var i = 0; i < divs.length; i++) {
+              divs[i].classList.add('start');
+        }
+      });
+      
+
+      //Adding second button listener
+      buttonMouseOver.addEventListener("mouseover", () => {
+      clearContainer();});
+      //Adiing touch button event listener
+      buttonTouch.addEventListener("touchenter", () => {  //mousedown for testing
+      enlargeTouchButton("bt_touch");});
+      buttonTouch.addEventListener("touchleave", () => {  //mouseup for testing
+      setsmallTouchButton("bt_touch");});
+      buttonMouseTouch.addEventListener("mousedown", () => {  //mousedown for testing
+      enlargeTouchButton("bt_mouse");});
+      buttonMouseTouch.addEventListener("mouseup", () => {  //mouseup for testing
+      setsmallTouchButton("bt_mouse");});
+      //inline function
+      window.onload = function(){
+        let divElement = document.getElementById("container_onload");
+        divElement.innerHTML = "Window loaded"
+      };
+
+      const message = document.getElementById("container_trans");
+      const el = document.getElementById('square');
+
+      el.addEventListener('transitionrun', function() {
+        message.textContent = 'transitionrun fired';
+      });
+
+      el.addEventListener('transitionstart', function() {
+        message.textContent = 'transitionstart fired';
+      });
+
+      el.addEventListener('transitioncancel', function() {
+        message.textContent = 'transitioncancel fired'; 
+      }); 
+
+      el.addEventListener('transitionend', function() {
+        message.textContent = 'transitionend fired'; 
+      });
+
+
+      const pfx = ["webkit", "moz", "MS", "o", ""];
+      function prefixedEvent(element, type, callback) {
+        for (var p = 0; p < pfx.length; p++) {
+          if (!pfx[p]) type = type.toLowerCase();
+          element.addEventListener(pfx[p]+type, callback, false);
+          }
+        }
+      var anim = document.getElementById("anim");
+      prefixedEvent(anim, "AnimationStart", animationStartListener);
+      prefixedEvent(anim, "AnimationIteration", animationIterListener);
+      prefixedEvent(anim, "AnimationEnd", animationEndListener);
+
+    // function myFunction(item, index) {
+    //   item.classList.add('start'); 
+    // }
+
+    function printToContainer(text){
+      let divElement = document.getElementById("container");
+      let paragraph = document.createElement('p');
+      paragraph.innerHTML = text;       
+    divElement.appendChild(paragraph);
+  }  
+
+  function clearContainer(){
+      let divs = document.querySelectorAll('.transitions_demo');
+        for (var i = 0; i < divs.length; i++) {
+              divs[i].classList.remove('start');
+        }
+  }
+
+  function enlargeTouchButton(id){
+      let button = document.getElementById(id);
+      button.classList.add('zoom');
+      button.classList.remove('squeeze');
+  }
+
+  function setsmallTouchButton(id){
+      let button = document.getElementById(id);
+      button.classList.add('squeeze');
+      button.classList.remove('zoom');
+  }
+
+  function animationStartListener(){
+      let anim = document.getElementById("container_anim");
+      anim.innerHTML = "animation start"
+  }
+
+  function animationIterListener(){
+      let anim = document.getElementById("container_anim");
+      anim.innerHTML = "animation iteration"
+  }
+  function animationEndListener(){
+      let anim = document.getElementById("container_anim");
+      anim.innerHTML = "animation end"
+  }
+
+  </script>
+  
+</body>
+</html>  
+
