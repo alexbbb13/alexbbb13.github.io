@@ -17,13 +17,38 @@
   </div>
 	<button id="bt_transitions_race">Click to start race</button> 
   <button id="bt_mouseover">Put mouse over to restart</button>
+  <h2>Transforms</h2>
 
+  <div class="wrap">
+    <div class="container">
+      <h1>Without transition</p>
+      <div class="box1 box"></div>
+    </div>
+     <div class="container">
+      <h1>With transition</p>
+      <div class="box2 box"></div>
+  </div>
+  <h1>Rotate Transform</p>
+  <div class="droplet"></div>
+  <h1>Transform Translate</p>
+  <div class="square2"></div>
+  <h1>Transform Skew</p>
+  <div class="square3"></div>
+  <h1>Transform-origin</p>
+  <div class="square4"></div>
+  <h1>Combining transforms</p>
+  <div class="square5"></div>
+
+
+</div>
+<!--
   <div id ="container"></div>
   <h2>Handling onTouchEnter</h2> 
   <button id="bt_touch">Touch me by the finger</button>
   <button id="bt_mouse">Touch me by the mouse</button>  
   <h2>Handling onLoad</h2> 
   <div id ="container_onload"></div>
+-->
   <h2>Transition callbacks</h2> 
   <h6>Move the mouse over the blue square</h6>
   <div id ="container_trans"></div>
@@ -42,8 +67,8 @@
     <script>
       let buttonClick = document.getElementById("bt_transitions_race");
       let buttonMouseOver = document.getElementById("bt_mouseover");
-      let buttonTouch = document.getElementById("bt_touch");
-      let buttonMouseTouch = document.getElementById("bt_mouse");
+      //let buttonTouch = document.getElementById("bt_touch");
+      //let buttonMouseTouch = document.getElementById("bt_mouse");
       //Adiing first button listener
       buttonClick.addEventListener("click", () => {
         let divs = document.querySelectorAll('.transitions_demo');
@@ -57,19 +82,19 @@
       buttonMouseOver.addEventListener("mouseover", () => {
       clearContainer();});
       //Adiing touch button event listener
-      buttonTouch.addEventListener("touchenter", () => {  //mousedown for testing
-      enlargeTouchButton("bt_touch");});
-      buttonTouch.addEventListener("touchleave", () => {  //mouseup for testing
-      setsmallTouchButton("bt_touch");});
-      buttonMouseTouch.addEventListener("mousedown", () => {  //mousedown for testing
-      enlargeTouchButton("bt_mouse");});
-      buttonMouseTouch.addEventListener("mouseup", () => {  //mouseup for testing
-      setsmallTouchButton("bt_mouse");});
+      //buttonTouch.addEventListener("touchenter", () => {  //mousedown for testing
+      //enlargeTouchButton("bt_touch");});
+      //buttonTouch.addEventListener("touchleave", () => {  //mouseup for testing
+      //setsmallTouchButton("bt_touch");});
+      //buttonMouseTouch.addEventListener("mousedown", () => {  //mousedown for testing
+      //enlargeTouchButton("bt_mouse");});
+      //buttonMouseTouch.addEventListener("mouseup", () => {  //mouseup for testing
+      //setsmallTouchButton("bt_mouse");});
       //inline function
-      window.onload = function(){
-        let divElement = document.getElementById("container_onload");
-        divElement.innerHTML = "Window loaded"
-      };
+      // window.onload = function(){
+      //   let divElement = document.getElementById("container_onload");
+      //   divElement.innerHTML = "Window loaded"
+      // };
 
       const message = document.getElementById("container_trans");
       const el = document.getElementById('square');
@@ -121,17 +146,17 @@
         }
   }
 
-  function enlargeTouchButton(id){
-      let button = document.getElementById(id);
-      button.classList.add('zoom');
-      button.classList.remove('squeeze');
-  }
+  // function enlargeTouchButton(id){
+  //     let button = document.getElementById(id);
+  //     button.classList.add('zoom');
+  //     button.classList.remove('squeeze');
+  // }
 
-  function setsmallTouchButton(id){
-      let button = document.getElementById(id);
-      button.classList.add('squeeze');
-      button.classList.remove('zoom');
-  }
+  // function setsmallTouchButton(id){
+  //     let button = document.getElementById(id);
+  //     button.classList.add('squeeze');
+  //     button.classList.remove('zoom');
+  // }
 
   function animationStartListener(){
       let anim = document.getElementById("container_anim");

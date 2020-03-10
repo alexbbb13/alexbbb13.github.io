@@ -135,3 +135,96 @@
 #div3 {transition-timing-function: ease-in;}
 #div4 {transition-timing-function: ease-out;}
 #div5 {transition-timing-function: ease-in-out;}
+
+.wrap {
+  margin: 50px;
+}
+
+.container {
+  display: inline-block;
+  width: 300px;
+}
+
+.box {
+  border-radius: 5px;
+  height: 40px;
+  margin: 50px auto;
+  width: 80px;
+}  
+
+.box1 {
+  background: mediumturquoise;
+}
+.box1:hover {
+  background: mediumturquoise;
+  transform: scale(2);
+}
+
+.box2 {
+  background: #2b3f53;
+  transition: all 1s;
+}
+.box2:hover {
+    transform: scale(2);
+}
+
+.droplet {
+  background: mediumaquamarine;
+  border-radius: 2% 50%;
+  height: 100px;
+  margin: 100px;
+  transition: all 3s;
+  transition-timing: ease-in-out;
+  width: 100px;
+}
+
+.droplet:hover {
+    transform: rotate(1080deg);
+}
+
+.square2 {
+  background: #2b3f53;
+  border-radius: 3px;
+  height: 100px;
+  width:  100px;
+  transition: transform 0.8s;
+}
+.square2:hover {
+  transform: translate(40px, 40px);
+}
+
+.square3 {
+  background: #2b3f53;
+  border-radius: 3px;
+  height: 100px;
+  width:  100px;
+  transition: transform 0.8s;
+}
+.square3:hover {
+  transform: skew(20deg);
+}
+
+.square4 {
+  background: #2b3f53;
+  border-radius: 3px;
+  height: 100px;
+  width:  100px;
+  transform-origin: left top;
+  transition: transform 1s;
+}
+.square4:hover {
+  transform: rotate(-180deg);
+}
+
+.square5 {
+  background: #2b3f53;
+  border-radius: 3px;
+  height: 100px;
+  width:  100px;
+  transform-origin: left top;
+  transition: transform 1s;
+}
+.square5:hover {
+  transform: rotate(90deg) scale(2) translateY(-50%) translateX(50%);
+}
+
