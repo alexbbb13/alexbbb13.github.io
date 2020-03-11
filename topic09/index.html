@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Topic 09,10,11,12,13 - Anomations, Transitions, Transformations</title>
+<html lang="en"et="utf-8">
+    <title>Topic 08 - HTML5 Tags - Video, Audio, and Canvas</title>
     <link rel="stylesheet" href="style.css" />
-   
   </head>
 <body>
-	<h2>Transitions</h2>
+	<h2>HTML 5 Video</h2>
   <div class="transitions_demo">	
       <div id="div1">linear</div>
       <div id="div2">ease</div>
@@ -41,14 +38,7 @@
 
 
 </div>
-<!--
-  <div id ="container"></div>
-  <h2>Handling onTouchEnter</h2> 
-  <button id="bt_touch">Touch me by the finger</button>
-  <button id="bt_mouse">Touch me by the mouse</button>  
-  <h2>Handling onLoad</h2> 
-  <div id ="container_onload"></div>
--->
+
   <h2>Transition callbacks</h2> 
   <h6>Move the mouse over the blue square</h6>
   <div id ="container_trans"></div>
@@ -67,9 +57,6 @@
     <script>
       let buttonClick = document.getElementById("bt_transitions_race");
       let buttonMouseOver = document.getElementById("bt_mouseover");
-      //let buttonTouch = document.getElementById("bt_touch");
-      //let buttonMouseTouch = document.getElementById("bt_mouse");
-      //Adiing first button listener
       buttonClick.addEventListener("click", () => {
         let divs = document.querySelectorAll('.transitions_demo');
         for (var i = 0; i < divs.length; i++) {
@@ -78,24 +65,9 @@
       });
       
 
-      //Adding second button listener
       buttonMouseOver.addEventListener("mouseover", () => {
       clearContainer();});
-      //Adiing touch button event listener
-      //buttonTouch.addEventListener("touchenter", () => {  //mousedown for testing
-      //enlargeTouchButton("bt_touch");});
-      //buttonTouch.addEventListener("touchleave", () => {  //mouseup for testing
-      //setsmallTouchButton("bt_touch");});
-      //buttonMouseTouch.addEventListener("mousedown", () => {  //mousedown for testing
-      //enlargeTouchButton("bt_mouse");});
-      //buttonMouseTouch.addEventListener("mouseup", () => {  //mouseup for testing
-      //setsmallTouchButton("bt_mouse");});
-      //inline function
-      // window.onload = function(){
-      //   let divElement = document.getElementById("container_onload");
-      //   divElement.innerHTML = "Window loaded"
-      // };
-
+     
       const message = document.getElementById("container_trans");
       const el = document.getElementById('square');
 
@@ -128,10 +100,6 @@
       prefixedEvent(anim, "AnimationIteration", animationIterListener);
       prefixedEvent(anim, "AnimationEnd", animationEndListener);
 
-    // function myFunction(item, index) {
-    //   item.classList.add('start'); 
-    // }
-
     function printToContainer(text){
       let divElement = document.getElementById("container");
       let paragraph = document.createElement('p');
@@ -145,18 +113,6 @@
               divs[i].classList.remove('start');
         }
   }
-
-  // function enlargeTouchButton(id){
-  //     let button = document.getElementById(id);
-  //     button.classList.add('zoom');
-  //     button.classList.remove('squeeze');
-  // }
-
-  // function setsmallTouchButton(id){
-  //     let button = document.getElementById(id);
-  //     button.classList.add('squeeze');
-  //     button.classList.remove('zoom');
-  // }
 
   function animationStartListener(){
       let anim = document.getElementById("container_anim");

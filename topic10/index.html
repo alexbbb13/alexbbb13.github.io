@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"et="utf-8">
+    <title>Topic 08 - HTML5 Tags - Video, Audio, and Canvas</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+<body>
+	<h2>HTML 5 Video</h2>
+  <h3>Video with controls example:</h3>
+  <video width="640" height="480" controls>
+  <source src="https://www.w3schools.com/tags/movie.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+  </video>
+  <br>
+  <h3>Video without controls example, enable video autoplay in settings and move the mouse onto the video</h3>
+  <video width="640" height="480" id="videoContainer">
+  <source src="https://www.w3schools.com/tags/movie.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+  </video>
+  <br>
+    <h2>HTML 5 Audio tag example</h2>
+    <h3>Harley sound</h3>
+    <audio controls>
+      <source src="harley.mp3" type="audio/mpeg">
+      Your browser does not support the audio tag.
+    </audio>
+  <h2>HTML 5 Canvas - Catch the Fast Goblins!</h2> 
+  <h3>Based on http://www.lostdecadegames.com/how-to-make-a-simple-html5-canvas-game/</h3>
+  <h3>The original was almost static, I have added dynamic interactions and enemy movement</h3> 
+  <div id="gameContainer"></div>  
+  <script>
+      let video = document.getElementById("videoContainer");
+      video.addEventListener("mouseenter", () => {
+      video.play();});
+      video.addEventListener("mouseleave", () => {
+      video.pause();});
+  </script>
+  <script src="js/game.js"></script>
+  
+</body>
+</html>  
+
