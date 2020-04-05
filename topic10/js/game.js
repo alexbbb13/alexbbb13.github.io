@@ -11,15 +11,15 @@ canvas.height = CANVAS_HEIGHT*SPRITE_SIZE;
 
 document.getElementById("gameContainer").appendChild(canvas);
 
-// Background image
-// let bgReady = false;
-// let bgImage = new Image();
-// bgImage.onload = function () {
-// 	bgReady = true;
-// };
-// bgImage.src = "images/background.png";
-
 //Loading objects
+
+let swordReady = false;
+let swordImage = new Image();
+swordImage.onload = function () {
+	swordReady = true;
+};
+swordImage.src = "images/sword_leo.png";
+
 
 let grassReady = false;
 let grassImage = new Image();
@@ -53,6 +53,21 @@ monsterImage.src = "images/monster.png";
 
 //Level
 let level =
+'TTTTTTT.TTTTTTTT' +
+'TT............TT' +
+'T..............T' +
+'................' +
+'................' +
+'................' +
+'................' +
+'................' +
+'................' +
+'................' +
+'................' +
+'.............T..' +
+'...T............' +
+'....T.......T...' +
+'..T...T....TT.TT' +
 '..T...T....TT.TT' +
 'T..T.T...T..T.T.' +
 '...T...T.T....T.' +
@@ -88,6 +103,9 @@ var hero = {
 var monster = {
 	speed: 192
 };
+var sword = {
+	speed: -250
+};
 var gameBackground = {
 	speed: 10,
 	currentLevelLine : 0,
@@ -121,6 +139,12 @@ let resetHero = function () {
 	hero.y = canvas.height / 2;
 };
 
+let resetSword = function (sword) {
+	sword.x = canvas.width / 2;
+	sword.y = canvas.height / 2;
+	sword.isFlying = false;
+};
+
 let resetBackground = function () {
 	gameBackground.currentLevel = level;
 	gameBackground.y = 0;
@@ -138,6 +162,7 @@ let resetBackground = function () {
 let update = function (modifier) {
 	updateHero(modifier);
 	updateGoblin(modifier);
+	updateSword(sword, modifier);
 	updateBackground(gameBackground, modifier);
 	// Are they touching?
 
@@ -173,6 +198,13 @@ let updateHero = function(modifier){
 	if (39 in keysDown) { // Player holding right
 		hero.x += hero.speed * modifier;
 	}
+	if (32 in keysDown) { // Player holding right
+		if(!sword.isFlying) {
+			sword.x = hero.x;
+			sword.y = hero.y;
+			sword.isFlying = true
+		}
+	}
 	if(hero.x < 0 ) hero.x = 0;
 	if(hero.x > SCREEN_WIDTH - SPRITE_SIZE ) hero.x = SCREEN_WIDTH - SPRITE_SIZE;
 	if(hero.y < 0 ) hero.y = 0;	
@@ -191,12 +223,19 @@ let updateBackground = function(background, modifier){
 	}
 };
 
+let updateSword = function(sword, modifier){
+	if (sword.isFlying) {
+		sword.y += sword.speed * modifier;
+		if(sword.y < -32 ) {
+	    	//off screen
+	    	sword.isFlying = false;	 
+		}
+	}	
+};
+
 
 // Draw everything
 let render = function () {
-	// if (bgReady) {
-	// 	ctx.drawImage(bgImage, 0, 0);
-	// }
 
 	if (grassReady && treeReady) {
 	 	drawBackground(gameBackground);
@@ -208,6 +247,10 @@ let render = function () {
 
 	if (monsterReady) {
 		ctx.drawImage(monsterImage, monster.x, monster.y);
+	}
+
+	if (sword.isFlying) {
+	 	ctx.drawImage(swordImage, sword.x, sword.y);
 	}
 
 	// Score
@@ -251,7 +294,7 @@ let drawBackground = function (background){
 			}
 		}
 
-
+		// Draw the main game field
 		globalLevelPos = background.currentLevelLine * CANVAS_WIDTH;
 
 		for(let h = 0; h < CANVAS_HEIGHT; h++) {
@@ -295,5 +338,6 @@ requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame
 var then = Date.now();
 resetHero();
 resetGoblin();
+resetSword(sword);
 resetBackground();
 main();
