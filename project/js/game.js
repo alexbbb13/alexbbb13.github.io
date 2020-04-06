@@ -39,7 +39,41 @@ class Sword {
   }
 }
 
+class Bird {
+  constructor(image) { 
+  	this.image = image;
+  	this.speedY = 50
+  	this.xDelta = 0 
+  	this.amplitude = 190
+  	this.period = Math.PI/6   //Full cycles per second
+  	}
+  reset() { this.isFlying = false; }
+  update(modifier) {
+  	this.xDelta +=modifier
+  	console.log("update "+this.xDelta)
+  	if (this.isFlying) {
+		this.y += this.speedY * modifier;
+		this.x = 200 + this.amplitude * Math.sin(this.xDelta*this.period);
+		if(this.y > SCREEN_HEIGHT) {
+	    	//off screen
+	    	this.isFlying = false;	 
+		}
+	}
+  }
+  draw (ctx) { 
+		if (this.isFlying) {
+	 		ctx.drawImage(this.image, this.x, this.y);
+		}
+  }
+  startFrom(x, y) {
+  	this.x = x
+  	this.y = y
+  	this.isFlying = true
+  }
+}
+
 var allSwordsArray = [];
+var allBirdsArray = [];
 
 class GarbageCollector {
   constructor() { 
@@ -56,7 +90,10 @@ class GarbageCollector {
 	    	allSwordsArray = allSwordsArray.filter(function(item) {
     			return item.isFlying
 			})
-			console.log("Collected GarbageCollector objects="+(oldSize-allSwordsArray.length))
+			allBirdsArray = allBirdsArray.filter(function(item) {
+    			return item.isFlying
+			})
+			//console.log("Collected GarbageCollector objects="+(oldSize-allSwordsArray.length))
 		}
   }
 }
@@ -69,6 +106,13 @@ swordImage.onload = function () {
 	swordReady = true;
 };
 swordImage.src = "images/sword_leo.png";
+
+let birdReady = false;
+let birdImage = new Image();
+birdImage.onload = function () {
+	birdReady = true;
+};
+birdImage.src = "images/bird.png";
 
 
 let grassReady = false;
@@ -212,6 +256,7 @@ let update = function (modifier) {
 	updateHero(modifier);
 	updateGoblin(modifier);
 	allSwordsArray.forEach(element=>element.update(modifier));
+	allBirdsArray.forEach(element=>element.update(modifier));
 	updateBackground(gameBackground, modifier);
 	// Are they touching?
 
@@ -249,7 +294,8 @@ let updateHero = function(modifier){
 	}
 	if (32 in keysDown && canFireNow) { // Player holding space
 		addSwordToArray(allSwordsArray , hero.x, hero.y)
-		setTimeout(unBlockFire, 350);
+		addBirdToArray(allBirdsArray, 200, 0)
+		setTimeout(unBlockFire, 350);	
 		canFireNow = false;
 	}
 	if(hero.x < 0 ) hero.x = 0;
@@ -266,6 +312,12 @@ let addSwordToArray = function(swordsArray, x, y) {
 	let newSword = new Sword(swordImage);
 	newSword.startFrom(x,y)
 	swordsArray.push(newSword)
+}
+
+let addBirdToArray = function(birdsArray, x, y) {
+	let newElement = new Bird(birdImage);
+	newElement.startFrom(x,y)
+	birdsArray.push(newElement)
 }
 
 let updateGoblin = function(modifier){
@@ -295,7 +347,8 @@ let render = function () {
 		ctx.drawImage(monsterImage, monster.x, monster.y);
 	}
 
-	renderAllSwords(allSwordsArray);
+	renderAll(allSwordsArray);
+	renderAll(allBirdsArray);
 	// Score
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "24px Helvetica";
@@ -304,9 +357,9 @@ let render = function () {
 	ctx.fillText("Score: " + monstersCaught*10, 32, 32);
 };
 
-let renderAllSwords = function(swordsArray){
+let renderAll = function(swordsArray){
 	swordsArray.forEach(sword => sword.draw(ctx))
-}	
+}
 
 let drawBackground = function (background){
 	let currentCanvasX = 0
