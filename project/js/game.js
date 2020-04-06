@@ -14,7 +14,7 @@ document.getElementById("gameContainer").appendChild(canvas);
 class Sword {
   constructor(image) { 
   	this.image = image;
-  	this.speed = -10;
+  	this.speed = -180;
   	this.isFlying = false;
   	}
   reset() { this.isFlying = false; }
@@ -54,7 +54,7 @@ class GarbageCollector {
 	    	this.y = 0
 	    	let oldSize = allSwordsArray.length
 	    	allSwordsArray = allSwordsArray.filter(function(item) {
-    		return item.isFlying
+    			return item.isFlying
 			})
 			console.log("Collected GarbageCollector objects="+(oldSize-allSwordsArray.length))
 		}
@@ -163,6 +163,7 @@ var garbageCollector= new GarbageCollector()
 
 let monstersCaught = 0;
 let monsterWon = false;
+let canFireNow = true;
 
 // Handle keyboard controls
 let keysDown = {};
@@ -246,14 +247,20 @@ let updateHero = function(modifier){
 	if (39 in keysDown) { // Player holding right
 		hero.x += hero.speed * modifier;
 	}
-	if (32 in keysDown) { // Player holding right
+	if (32 in keysDown && canFireNow) { // Player holding space
 		addSwordToArray(allSwordsArray , hero.x, hero.y)
+		setTimeout(unBlockFire, 350);
+		canFireNow = false;
 	}
 	if(hero.x < 0 ) hero.x = 0;
 	if(hero.x > SCREEN_WIDTH - SPRITE_SIZE ) hero.x = SCREEN_WIDTH - SPRITE_SIZE;
 	if(hero.y < 0 ) hero.y = 0;	
 	if(hero.y > SCREEN_HEIGHT - SPRITE_SIZE ) hero.y = SCREEN_HEIGHT - SPRITE_SIZE;
 };
+
+function unBlockFire() {
+   canFireNow = true;
+}
 
 let addSwordToArray = function(swordsArray, x, y) {
 	let newSword = new Sword(swordImage);
