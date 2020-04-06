@@ -3,37 +3,18 @@ let canvas = document.createElement("canvas");
 let ctx = canvas.getContext("2d");
 const SPRITE_SIZE = 32;
 const SCREEN_WIDTH = 16*SPRITE_SIZE;
-const SCREEN_HEIGHT = 15*SPRITE_SIZE;
-const CANVAS_WIDTH = 16; //width of canvas in sprites
-const CANVAS_HEIGHT = 15;  //height of canvas in sprites
-canvas.width = CANVAS_WIDTH*SPRITE_SIZE;
-canvas.height = CANVAS_HEIGHT*SPRITE_SIZE;
-
+const SCREEN_HEIGHT = 15*SPRITE_SIZE; 
+canvas.width = 16*SPRITE_SIZE;
+canvas.height = 15*SPRITE_SIZE;
 document.getElementById("gameContainer").appendChild(canvas);
 
-//Loading objects
-
-let swordReady = false;
-let swordImage = new Image();
-swordImage.onload = function () {
-	swordReady = true;
+// Background image
+let bgReady = false;
+let bgImage = new Image();
+bgImage.onload = function () {
+	bgReady = true;
 };
-swordImage.src = "images/sword_leo.png";
-
-
-let grassReady = false;
-let grassImage = new Image();
-grassImage.onload = function () {
-	grassReady = true;
-};
-grassImage.src = "images/grass.png";
-
-let treeReady = false;
-let treeImage = new Image();
-treeImage.onload = function () {
-	treeReady = true;
-};
-treeImage.src = "images/tree.png";
+bgImage.src = "images/background.png";
 
 // Hero image
 let heroReady = false;
@@ -51,51 +32,6 @@ monsterImage.onload = function () {
 };
 monsterImage.src = "images/monster.png";
 
-//Level
-let level =
-'TTTTTTT.TTTTTTTT' +
-'TT............TT' +
-'T..............T' +
-'................' +
-'................' +
-'................' +
-'................' +
-'................' +
-'................' +
-'................' +
-'................' +
-'.............T..' +
-'...T............' +
-'....T.......T...' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT' +
-'T..T.T...T..T.T.' +
-'...T...T.T....T.' +
-'.T........T....T' +
-'....T......T....' +
-'.T......T.T....T' +
-'..T...T....TT.TT' +
-'T..T.T...T..T.T.' +
-'...T...T.T....T.' +
-'.T........T....T' +
-'....T......T....' +
-'.T......T.T....T' +
-'....T.T....T....' +
-'....T......T....' +
-'....T......T....' +
-'....T......TTTT.' +
-'....T......T....' +
-'....T......T....' +
-'....T......T.TT.' +
-'T...T......TTT.T' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT'
 // Game objects
 var hero = {
 	speed: 128 // movement in pixels per second
@@ -103,15 +39,6 @@ var hero = {
 var monster = {
 	speed: 192
 };
-var sword = {
-	speed: -250
-};
-var gameBackground = {
-	speed: 10,
-	currentLevelLine : 0,
-	y: 0,
-};
-
 let monstersCaught = 0;
 let monsterWon = false;
 
@@ -139,31 +66,11 @@ let resetHero = function () {
 	hero.y = canvas.height / 2;
 };
 
-let resetSword = function (sword) {
-	sword.x = canvas.width / 2;
-	sword.y = canvas.height / 2;
-	sword.isFlying = false;
-};
-
-let resetBackground = function () {
-	gameBackground.currentLevel = level;
-	gameBackground.y = 0;
-	gameBackground.endOfLevelReached = false;
-	gameBackground.currentLevelLine = (level.length)/CANVAS_WIDTH - CANVAS_HEIGHT ;  
-	                                        //currentLevelLine is a property that shows
-											//what curent level line is drawn on the top of the screen
-											// initially it is calculated as height of the level in lines mimus the height of the screen
-											// When y becomes 32 (the screen had shifted 1 line)) currentLevelLine is decremented 
-											//until it reaches 0  (top of the level is detected)
-											//and we stop drawing top partially visible line in drawBackground
-};
 
 // Update game objects
 let update = function (modifier) {
 	updateHero(modifier);
 	updateGoblin(modifier);
-	updateSword(sword, modifier);
-	updateBackground(gameBackground, modifier);
 	// Are they touching?
 
 	if(monsterWon) {
@@ -198,13 +105,6 @@ let updateHero = function(modifier){
 	if (39 in keysDown) { // Player holding right
 		hero.x += hero.speed * modifier;
 	}
-	if (32 in keysDown) { // Player holding right
-		if(!sword.isFlying) {
-			sword.x = hero.x;
-			sword.y = hero.y;
-			sword.isFlying = true
-		}
-	}
 	if(hero.x < 0 ) hero.x = 0;
 	if(hero.x > SCREEN_WIDTH - SPRITE_SIZE ) hero.x = SCREEN_WIDTH - SPRITE_SIZE;
 	if(hero.y < 0 ) hero.y = 0;	
@@ -217,28 +117,11 @@ let updateGoblin = function(modifier){
 	if(monster.y > SCREEN_HEIGHT - SPRITE_SIZE) monsterWon=true;
 };
 
-let updateBackground = function(background, modifier){
-	if (!background.endOfLevelReached){
-		background.y += background.speed * modifier;
-	}
-};
-
-let updateSword = function(sword, modifier){
-	if (sword.isFlying) {
-		sword.y += sword.speed * modifier;
-		if(sword.y < -32 ) {
-	    	//off screen
-	    	sword.isFlying = false;	 
-		}
-	}	
-};
-
 
 // Draw everything
 let render = function () {
-
-	if (grassReady && treeReady) {
-	 	drawBackground(gameBackground);
+	if (bgReady) {
+		ctx.drawImage(bgImage, 0, 0);
 	}
 
 	if (heroReady) {
@@ -249,10 +132,6 @@ let render = function () {
 		ctx.drawImage(monsterImage, monster.x, monster.y);
 	}
 
-	if (sword.isFlying) {
-	 	ctx.drawImage(swordImage, sword.x, sword.y);
-	}
-
 	// Score
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "24px Helvetica";
@@ -260,61 +139,6 @@ let render = function () {
 	ctx.textBaseline = "top";
 	ctx.fillText("Score: " + monstersCaught*10, 32, 32);
 };
-
-let drawBackground = function (background){
-	let currentCanvasX = 0
-	let currentCanvasY = 0
-		// Draw top line(partially visible at height -1)
-
-        if (background.y > 32) {
-        	background.currentLevelLine--;
-        	background.y = 0;
-        	if(background.currentLevelLine < 1) {
-        		background.endOfLevelReached = true
-        		//background.y = 0;
-        	}
-        }
-        // Draw the top partially visible line if the end of level is not reached
-        // When the end of the level is reached background stops scrolling
-        // see updateBackground
-        if (!background.endOfLevelReached) {
-	        let globalLevelPos = (background.currentLevelLine - 1) * CANVAS_WIDTH;
-
-				for(let w = 0; w < CANVAS_WIDTH; w++) {
-					let x = w*SPRITE_SIZE;
-					let levelValue = background.currentLevel.charAt(globalLevelPos+w)
-					switch (levelValue) {
-						case '.':
-							ctx.drawImage(grassImage, x, Math.round(background.y - 32) );//+ background.y);
-						break;
-						case 'T':
-							ctx.drawImage(treeImage, x, Math.round(background.y - 32));//+ background.y); movement works
-						break;	
-					}
-			}
-		}
-
-		// Draw the main game field
-		globalLevelPos = background.currentLevelLine * CANVAS_WIDTH;
-
-		for(let h = 0; h < CANVAS_HEIGHT; h++) {
-			for(let w = 0; w < CANVAS_WIDTH; w++) {
-				let levelPos = h*CANVAS_WIDTH+w;
-				let x = w*SPRITE_SIZE;
-				let y = h*SPRITE_SIZE;
-				let levelValue = background.currentLevel.charAt(levelPos + globalLevelPos)
-				switch (levelValue) {
-					case '.':
-						ctx.drawImage(grassImage, x, Math.round(y+background.y));//+ background.y);
-					break;
-					case 'T':
-						ctx.drawImage(treeImage, x, Math.round(y+background.y));//+ background.y); movement works
-					break;	
-				}
-			}	
-		}
-
-}
 
 // The main game loop
 let main = function () {
@@ -338,6 +162,4 @@ requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame
 var then = Date.now();
 resetHero();
 resetGoblin();
-resetSword(sword);
-resetBackground();
 main();

@@ -112,6 +112,8 @@ var gameBackground = {
 	y: 0,
 };
 
+var allSwordsArray = [sword, sword, sword, sword];
+
 let monstersCaught = 0;
 let monsterWon = false;
 
@@ -145,6 +147,10 @@ let resetSword = function (sword) {
 	sword.isFlying = false;
 };
 
+let resetAllSwords = function (swordArray) {
+	swordArray.forEach(element => resetSword(element))
+};
+
 let resetBackground = function () {
 	gameBackground.currentLevel = level;
 	gameBackground.y = 0;
@@ -162,7 +168,7 @@ let resetBackground = function () {
 let update = function (modifier) {
 	updateHero(modifier);
 	updateGoblin(modifier);
-	updateSword(sword, modifier);
+	allSwordsArray.forEach(element=>updateSword(element, modifier));
 	updateBackground(gameBackground, modifier);
 	// Are they touching?
 
@@ -199,17 +205,23 @@ let updateHero = function(modifier){
 		hero.x += hero.speed * modifier;
 	}
 	if (32 in keysDown) { // Player holding right
-		if(!sword.isFlying) {
-			sword.x = hero.x;
-			sword.y = hero.y;
-			sword.isFlying = true
-		}
+		addSwordToArray(allSwordsArray, hero.x, hero.y)
 	}
 	if(hero.x < 0 ) hero.x = 0;
 	if(hero.x > SCREEN_WIDTH - SPRITE_SIZE ) hero.x = SCREEN_WIDTH - SPRITE_SIZE;
 	if(hero.y < 0 ) hero.y = 0;	
 	if(hero.y > SCREEN_HEIGHT - SPRITE_SIZE ) hero.y = SCREEN_HEIGHT - SPRITE_SIZE;
 };
+
+let addSwordToArray = function(swordsArray, x, y) {
+	swordsArray.forEach((sword)=>{ 
+		if (!sword.isFlying) {
+			sword.x = x;
+			sword.y = y;
+			sword.isFlying = true
+		}
+	})
+}
 
 let updateGoblin = function(modifier){
 	monster.y += monster.speed * modifier;
@@ -249,10 +261,7 @@ let render = function () {
 		ctx.drawImage(monsterImage, monster.x, monster.y);
 	}
 
-	if (sword.isFlying) {
-	 	ctx.drawImage(swordImage, sword.x, sword.y);
-	}
-
+	renderAllSwords(allSwordsArray);
 	// Score
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "24px Helvetica";
@@ -260,6 +269,18 @@ let render = function () {
 	ctx.textBaseline = "top";
 	ctx.fillText("Score: " + monstersCaught*10, 32, 32);
 };
+
+let renderAllSwords = function(swordsArray){
+	swordsArray.forEach((sword)=>{ 
+		if (sword.isFlying) {
+	 		ctx.drawImage(swordImage, sword.x, sword.y);
+		}
+	})
+}	
+
+let renderOneSword = function(sword){
+	
+}
 
 let drawBackground = function (background){
 	let currentCanvasX = 0
@@ -338,6 +359,6 @@ requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame
 var then = Date.now();
 resetHero();
 resetGoblin();
-resetSword(sword);
+resetAllSwords(allSwordsArray);
 resetBackground();
 main();
