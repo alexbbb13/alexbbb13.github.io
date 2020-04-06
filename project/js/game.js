@@ -12,7 +12,6 @@ canvas.height = CANVAS_HEIGHT*SPRITE_SIZE;
 document.getElementById("gameContainer").appendChild(canvas);
 
 class Sword {
-
   constructor(image) { 
   	this.image = image;
   	this.speed = -10;
@@ -37,6 +36,28 @@ class Sword {
   	this.x = x
   	this.y = y
   	this.isFlying = true
+  }
+}
+
+var allSwordsArray = [];
+
+class GarbageCollector {
+  constructor() { 
+  	this.speed = 10;
+  	this.y=0;
+  	}
+  update(modifier) {
+  		this.y += this.speed * modifier;
+  		//console.log("update "+this.y)
+  		if(this.y > 30 ) {
+	    	//start collecting garbage objects
+	    	this.y = 0
+	    	let oldSize = allSwordsArray.length
+	    	allSwordsArray = allSwordsArray.filter(function(item) {
+    		return item.isFlying
+			})
+			console.log("Collected GarbageCollector objects="+(oldSize-allSwordsArray.length))
+		}
   }
 }
 
@@ -138,7 +159,7 @@ var gameBackground = {
 	y: 0,
 };
 
-var allSwordsArray = [new Sword(swordImage), new Sword(swordImage), new Sword(swordImage), new Sword(swordImage)];
+var garbageCollector= new GarbageCollector()
 
 let monstersCaught = 0;
 let monsterWon = false;
@@ -186,6 +207,7 @@ let resetBackground = function () {
 
 // Update game objects
 let update = function (modifier) {
+	garbageCollector.update(modifier)
 	updateHero(modifier);
 	updateGoblin(modifier);
 	allSwordsArray.forEach(element=>element.update(modifier));
@@ -234,11 +256,9 @@ let updateHero = function(modifier){
 };
 
 let addSwordToArray = function(swordsArray, x, y) {
-	swordsArray.forEach(sword=>{ 
-		if (!sword.isFlying) {
-			sword.startFrom(x,y)
-		}
-	})
+	let newSword = new Sword(swordImage);
+	newSword.startFrom(x,y)
+	swordsArray.push(newSword)
 }
 
 let updateGoblin = function(modifier){
@@ -252,17 +272,6 @@ let updateBackground = function(background, modifier){
 		background.y += background.speed * modifier;
 	}
 };
-
-// let updateSword = function(sword, modifier){
-// 	if (sword.isFlying) {
-// 		sword.y += sword.speed * modifier;
-// 		if(sword.y < -32 ) {
-// 	    	//off screen
-// 	    	sword.isFlying = false;	 
-// 		}
-// 	}	
-// };
-
 
 // Draw everything
 let render = function () {
