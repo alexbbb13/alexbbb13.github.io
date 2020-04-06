@@ -11,6 +11,35 @@ canvas.height = CANVAS_HEIGHT*SPRITE_SIZE;
 
 document.getElementById("gameContainer").appendChild(canvas);
 
+class Sword {
+
+  constructor(image) { 
+  	this.image = image;
+  	this.speed = -10;
+  	this.isFlying = false;
+  	}
+  reset() { this.isFlying = false; }
+  update(modifier) {
+  	if (this.isFlying) {
+		this.y += this.speed * modifier;
+		if(this.y < -32 ) {
+	    	//off screen
+	    	this.isFlying = false;	 
+		}
+	}
+  }
+  draw (ctx) { 
+		if (this.isFlying) {
+	 		ctx.drawImage(this.image, this.x, this.y);
+		}
+  }
+  startFrom(x, y) {
+  	this.x = x
+  	this.y = y
+  	this.isFlying = true
+  }
+}
+
 //Loading objects
 
 let swordReady = false;
@@ -103,16 +132,13 @@ var hero = {
 var monster = {
 	speed: 192
 };
-var sword = {
-	speed: -250
-};
 var gameBackground = {
 	speed: 10,
 	currentLevelLine : 0,
 	y: 0,
 };
 
-var allSwordsArray = [sword, sword, sword, sword];
+var allSwordsArray = [new Sword(swordImage), new Sword(swordImage), new Sword(swordImage), new Sword(swordImage)];
 
 let monstersCaught = 0;
 let monsterWon = false;
@@ -141,14 +167,8 @@ let resetHero = function () {
 	hero.y = canvas.height / 2;
 };
 
-let resetSword = function (sword) {
-	sword.x = canvas.width / 2;
-	sword.y = canvas.height / 2;
-	sword.isFlying = false;
-};
-
 let resetAllSwords = function (swordArray) {
-	swordArray.forEach(element => resetSword(element))
+	swordArray.forEach(element => element.reset())
 };
 
 let resetBackground = function () {
@@ -168,7 +188,7 @@ let resetBackground = function () {
 let update = function (modifier) {
 	updateHero(modifier);
 	updateGoblin(modifier);
-	allSwordsArray.forEach(element=>updateSword(element, modifier));
+	allSwordsArray.forEach(element=>element.update(modifier));
 	updateBackground(gameBackground, modifier);
 	// Are they touching?
 
@@ -205,7 +225,7 @@ let updateHero = function(modifier){
 		hero.x += hero.speed * modifier;
 	}
 	if (32 in keysDown) { // Player holding right
-		addSwordToArray(allSwordsArray, hero.x, hero.y)
+		addSwordToArray(allSwordsArray , hero.x, hero.y)
 	}
 	if(hero.x < 0 ) hero.x = 0;
 	if(hero.x > SCREEN_WIDTH - SPRITE_SIZE ) hero.x = SCREEN_WIDTH - SPRITE_SIZE;
@@ -214,11 +234,9 @@ let updateHero = function(modifier){
 };
 
 let addSwordToArray = function(swordsArray, x, y) {
-	swordsArray.forEach((sword)=>{ 
+	swordsArray.forEach(sword=>{ 
 		if (!sword.isFlying) {
-			sword.x = x;
-			sword.y = y;
-			sword.isFlying = true
+			sword.startFrom(x,y)
 		}
 	})
 }
@@ -235,15 +253,15 @@ let updateBackground = function(background, modifier){
 	}
 };
 
-let updateSword = function(sword, modifier){
-	if (sword.isFlying) {
-		sword.y += sword.speed * modifier;
-		if(sword.y < -32 ) {
-	    	//off screen
-	    	sword.isFlying = false;	 
-		}
-	}	
-};
+// let updateSword = function(sword, modifier){
+// 	if (sword.isFlying) {
+// 		sword.y += sword.speed * modifier;
+// 		if(sword.y < -32 ) {
+// 	    	//off screen
+// 	    	sword.isFlying = false;	 
+// 		}
+// 	}	
+// };
 
 
 // Draw everything
@@ -271,16 +289,8 @@ let render = function () {
 };
 
 let renderAllSwords = function(swordsArray){
-	swordsArray.forEach((sword)=>{ 
-		if (sword.isFlying) {
-	 		ctx.drawImage(swordImage, sword.x, sword.y);
-		}
-	})
+	swordsArray.forEach(sword => sword.draw(ctx))
 }	
-
-let renderOneSword = function(sword){
-	
-}
 
 let drawBackground = function (background){
 	let currentCanvasX = 0
