@@ -146,7 +146,7 @@ monsterImage.src = "images/monster.png";
 
 //Level
 let level =
-'TTTTTTT.TTTTTTTT' +
+'TTTTTTTBTTTTTTTT' +
 'TT............TT' +
 'T..............T' +
 '................' +
@@ -261,11 +261,11 @@ let update = function (modifier) {
 
 	if(monsterWon) {
 		resetGoblin();
-		monstersCaught=monstersCaught-3;
+		monstersCaught=monstersCaught-30;
 		if(monstersCaught < 0) monstersCaught=0;
 	} else {
 		if (isMonsterCaught(hero, monster)) {
-			++monstersCaught;
+			monstersCaught=monstersCaught+10;
 			resetGoblin();	
 		}
 	}
@@ -361,15 +361,20 @@ let render = function () {
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
-	ctx.fillText("Score: " + monstersCaught*10, 32, 32);
+	ctx.fillText("Score: " + monstersCaught, 32, 32);
 };
 
 let handleCollisions = function() {
 	allSwordsArray.forEach(sword=> {if(sword.isFlying) {
 		    allBirdsArray.forEach(bird=>{if(bird.isFlying) {
+		    if(isMonsterCaught(hero, bird)) {
+		    	bird.isFlying = false
+				monstersCaught=monstersCaught-10;
+		    }	
 			if(isMonsterCaught(sword, bird)) {
 				sword.isFlying = false
 				bird.isFlying = false
+				monstersCaught=monstersCaught+5;
 		     }
 		}})
 	}})
