@@ -155,39 +155,39 @@ let level =
 '................' +
 '................' +
 '................' +
-'................' +
+'......B.........' +
 '................' +
 '.............T..' +
-'...T............' +
+'...T...B........' +
 '....T.......T...' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT' +
+'..T...T...BTT.TT' +
+'..T...T.B..TT.TT' +
 'T..T.T...T..T.T.' +
-'...T...T.T....T.' +
-'.T........T....T' +
+'...T...TBT....T.' +
+'.T..B.....T....T' +
 '....T......T....' +
-'.T......T.T....T' +
+'.T.....BT.T....T' +
 '..T...T....TT.TT' +
-'T..T.T...T..T.T.' +
+'T..T.T.B.T..T.T.' +
 '...T...T.T....T.' +
-'.T........T....T' +
+'.T.....B..T....T' +
 '....T......T....' +
-'.T......T.T....T' +
+'.T.....BT.T....T' +
 '....T.T....T....' +
+'....T..B...T....' +
+'....T..B...T....' +
+'....TTTBTTTTTTT.' +
 '....T......T....' +
-'....T......T....' +
-'....T......TTTT.' +
-'....T......T....' +
-'....T......T....' +
+'...........T....' +
 '....T......T.TT.' +
 'T...T......TTT.T' +
 '..T...T....TT.TT' +
 '..T...T....TT.TT' +
 '..T...T....TT.TT' +
 '..T...T....TT.TT' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT' +
+'..T.T......T..TT' +
+'..T...T.....T.TT' +
+'..T.....T..TT.TT' +
 '..T...T....TT.TT'
 // Game objects
 var hero = {
@@ -275,11 +275,16 @@ function isMonsterCaught(hero, monster) {
 	let deltaX = (hero.x+16)-(monster.x+16)  //+16 because x, y are in the top left corner of the sprite
 	let deltaY = (hero.y+16)-(monster.y+16)  // sprite is 32x32, so +16 is the center
 	return((deltaX*deltaX+deltaY*deltaY)<500)  //900 = 30 squared
-	// return hero.x <= (monster.x + 32)
-	// 	&& monster.x <= (hero.x + 32)
-	// 	&& hero.y <= (monster.y + 32)
-	// 	&& monster.y <= (hero.y + 32)
 }
+
+let birdGenerator = function (birdsArray,nBirds, x, y) {
+	console.log("birdGen n = "+ nBirds)
+	if(nBirds > 0) {
+		for(i=0; i< nBirds; i++) {
+			setTimeout(addBirdToArray.bind(this,birdsArray,x, y), 500*i)  //500 ms before new bird appearance  
+		}
+	}
+};
 
 let updateHero = function(modifier){
 	if (38 in keysDown) { // Player holding up
@@ -296,7 +301,7 @@ let updateHero = function(modifier){
 	}
 	if (32 in keysDown && canFireNow) { // Player holding space
 		addSwordToArray(allSwordsArray , hero.x, hero.y)
-		addBirdToArray(allBirdsArray, 200, 0)
+		// birdGenerator(allBirdsArray, 5, 200, -32);
 		setTimeout(unBlockFire, 350);	
 		canFireNow = false;
 	}
@@ -381,10 +386,16 @@ let drawBackground = function (background){
 
         if (background.y > 32) {
         	background.currentLevelLine--;
-        	background.y = 0;
+        	background.y = 0;  //Line feed
+        	for(let w = 0; w < CANVAS_WIDTH; w++) {
+        		let globalLevelPos = (background.currentLevelLine - 1) * CANVAS_WIDTH;
+        		let levelValue = background.currentLevel.charAt(globalLevelPos+w)
+        		if(levelValue=='B'){  //Generate 5 birds if we encounter the 'B' symbol in the level
+        			birdGenerator(allBirdsArray, 5, 200, -32);
+        		}
+        	}
         	if(background.currentLevelLine < 1) {
         		background.endOfLevelReached = true
-        		//background.y = 0;
         	}
         }
         // Draw the top partially visible line if the end of level is not reached
@@ -396,12 +407,14 @@ let drawBackground = function (background){
 				for(let w = 0; w < CANVAS_WIDTH; w++) {
 					let x = w*SPRITE_SIZE;
 					let levelValue = background.currentLevel.charAt(globalLevelPos+w)
+					let yRoundedValue = Math.round(background.y - 32)
 					switch (levelValue) {
 						case '.':
-							ctx.drawImage(grassImage, x, Math.round(background.y - 32) );//+ background.y);
+						case 'B':
+							ctx.drawImage(grassImage, x, yRoundedValue );//+ background.y);
 						break;
 						case 'T':
-							ctx.drawImage(treeImage, x, Math.round(background.y - 32));//+ background.y); movement works
+							ctx.drawImage(treeImage, x, yRoundedValue);//+ background.y); movement works
 						break;	
 					}
 			}
@@ -418,6 +431,7 @@ let drawBackground = function (background){
 				let levelValue = background.currentLevel.charAt(levelPos + globalLevelPos)
 				switch (levelValue) {
 					case '.':
+					case 'B':
 						ctx.drawImage(grassImage, x, Math.round(y+background.y));//+ background.y);
 					break;
 					case 'T':
