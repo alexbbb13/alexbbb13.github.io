@@ -50,7 +50,6 @@ class Bird {
   reset() { this.isFlying = false; }
   update(modifier) {
   	this.xDelta +=modifier
-  	console.log("update "+this.xDelta)
   	if (this.isFlying) {
 		this.y += this.speedY * modifier;
 		this.x = 200 + this.amplitude * Math.sin(this.xDelta*this.period);
@@ -93,7 +92,7 @@ class GarbageCollector {
 			allBirdsArray = allBirdsArray.filter(function(item) {
     			return item.isFlying
 			})
-			//console.log("Collected GarbageCollector objects="+(oldSize-allSwordsArray.length))
+			console.log("Collected GarbageCollector objects="+(oldSize-allSwordsArray.length))
 		}
   }
 }
@@ -265,18 +264,21 @@ let update = function (modifier) {
 		monstersCaught=monstersCaught-3;
 		if(monstersCaught < 0) monstersCaught=0;
 	} else {
-		if (isMonsterCaught()) {
+		if (isMonsterCaught(hero, monster)) {
 			++monstersCaught;
 			resetGoblin();	
 		}
 	}
 };
 
-function isMonsterCaught() {
-	return hero.x <= (monster.x + 32)
-		&& monster.x <= (hero.x + 32)
-		&& hero.y <= (monster.y + 32)
-		&& monster.y <= (hero.y + 32)
+function isMonsterCaught(hero, monster) {
+	let deltaX = (hero.x+16)-(monster.x+16)  //+16 because x, y are in the top left corner of the sprite
+	let deltaY = (hero.y+16)-(monster.y+16)  // sprite is 32x32, so +16 is the center
+	return((deltaX*deltaX+deltaY*deltaY)<500)  //900 = 30 squared
+	// return hero.x <= (monster.x + 32)
+	// 	&& monster.x <= (hero.x + 32)
+	// 	&& hero.y <= (monster.y + 32)
+	// 	&& monster.y <= (hero.y + 32)
 }
 
 let updateHero = function(modifier){
@@ -357,6 +359,17 @@ let render = function () {
 	ctx.fillText("Score: " + monstersCaught*10, 32, 32);
 };
 
+let handleCollisions = function() {
+	allSwordsArray.forEach(sword=> {if(sword.isFlying) {
+		    allBirdsArray.forEach(bird=>{if(bird.isFlying) {
+			if(isMonsterCaught(sword, bird)) {
+				sword.isFlying = false
+				bird.isFlying = false
+		     }
+		}})
+	}})
+}
+
 let renderAll = function(swordsArray){
 	swordsArray.forEach(sword => sword.draw(ctx))
 }
@@ -423,6 +436,7 @@ let main = function () {
 
 	update(delta / 1000);
 	render();
+	handleCollisions();
 
 	then = now;
 
