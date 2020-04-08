@@ -507,7 +507,7 @@ function loadLevel(levelNumber, callback){
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
-          		callback(xhttp.responseText.trim().replace(/ /g,''));  //Remove /n, and spaces globally
+          		callback(xhttp.responseText.trim().replace(/\s/g,''));  //Remove /n, and spaces globally
           }
         };
         xhttp.open("GET", 'levels/level'+levelNumber+'.txt', true);
