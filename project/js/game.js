@@ -473,6 +473,19 @@ let showGameover = function() {
 	animationDiv.classList.add("gameover_visible");
 } 
 
+let showLevel = function(levelNumber) {
+	let transitionDiv = document.getElementById("level");
+	transitionDiv.innerHTML='Level '+levelNumber;
+	transitionDiv.classList.remove("level_hidden");
+	transitionDiv.classList.add("level_visible");
+	transitionDiv.classList.add("zoom");
+	transitionDiv.addEventListener('transitionend', function() {
+        	transitionDiv.classList.remove("level_visible");
+        	transitionDiv.classList.remove("zoom");
+			transitionDiv.classList.add("level_hidden");
+      });
+} 
+
 // The main game loop
 let main = function () {
 	let now = Date.now();
@@ -488,14 +501,31 @@ let main = function () {
 	requestAnimationFrame(main);
 };
 
+
+function loadLevel(levelNumber, callback){
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+          		callback(xhttp.responseText.trim());
+          }
+        };
+        xhttp.open("GET", 'levels/level'+levelNumber+'.txt', true);
+        xhttp.send();
+}
+
 // Cross-browser support for requestAnimationFrame
 let w = window;
 requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
 
 // Let's play this game!
-var then = Date.now();
-resetHero();
-resetGoblin();
-resetAllSwords(allSwordsArray);
-resetBackground();
-main();
+loadLevel(1, function(levelData) {
+	level = levelData
+	var then = Date.now();
+	resetHero();
+	resetGoblin();
+	resetAllSwords(allSwordsArray);
+	resetBackground();
+	showLevel(1);
+	main();	
+});
+
