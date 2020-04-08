@@ -144,8 +144,9 @@ monsterImage.onload = function () {
 };
 monsterImage.src = "images/monster.png";
 
+let level ='';
 //Level
-let level =
+let oldlevel =
 'TTTTTTTBTTTTTTTT' +
 'TT............TT' +
 'T..............T' +
@@ -506,7 +507,7 @@ function loadLevel(levelNumber, callback){
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
-          		callback(xhttp.responseText.trim());
+          		callback(xhttp.responseText.trim().replace(/ /g,''));  //Remove /n, and spaces globally
           }
         };
         xhttp.open("GET", 'levels/level'+levelNumber+'.txt', true);
