@@ -1,0 +1,43 @@
+
+.gameover_hidden div {
+    visibility: hidden;
+}
+.gameover_visible div {
+    visibility: visible;
+    height:155px;
+    position: absolute;
+    top: 170px;
+    left: 0;
+    width: 284px;
+}
+
+.gameover_visible div:nth-of-type(1) {
+    height: 155px;
+    width: 284px;
+    -webkit-animation: slide 3s ease-in-out infinite;
+    -moz-animation: slide 3s ease-in-out infinite;
+    animation: slide 3s ease-in-out infinite;
+}
+
+@keyframes slide {
+    0% {
+        left: 220px
+    }
+    50% {
+        left: 20px;
+    }
+    100% {
+        left: 220px
+    }
+}
+@-webkit-keyframes slide {
+    0% {
+        left: 220px
+    }
+    50% {
+        left: 20px;
+    }
+    100% {
+        left: 220px;
+    }
+}

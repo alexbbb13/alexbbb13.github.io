@@ -92,13 +92,13 @@
 }
 @keyframes slide {
     0% {
-        left: 0%
+        left: 0px
     }
     50% {
-        left: 75%;
+        left: 500px;
     }
     100% {
-        left: 0%;
+        left: 0px;
     }
 }
 @-webkit-keyframes slide {

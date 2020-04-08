@@ -111,7 +111,7 @@ let birdImage = new Image();
 birdImage.onload = function () {
 	birdReady = true;
 };
-birdImage.src = "images/bird.png";
+birdImage.src = "images/bird_leo.png";
 
 
 let grassReady = false;
@@ -191,15 +191,18 @@ let level =
 '..T...T....TT.TT'
 // Game objects
 var hero = {
-	speed: 128 // movement in pixels per second
+	speed: 128, // movement in pixels per second
+	isFlying: true
 };
 var monster = {
-	speed: 192
+	speed: 192,
+	isFlying: true
 };
 var gameBackground = {
 	speed: 10,
 	currentLevelLine : 0,
 	y: 0,
+	isFlying: true
 };
 
 var garbageCollector= new GarbageCollector()
@@ -230,6 +233,7 @@ let resetGoblin = function () {
 let resetHero = function () {
 	hero.x = canvas.width / 2;
 	hero.y = canvas.height / 2;
+	hero.isFlying = true;
 };
 
 let resetAllSwords = function (swordArray) {
@@ -237,6 +241,7 @@ let resetAllSwords = function (swordArray) {
 };
 
 let resetBackground = function () {
+	gameBackground.isFlying = true;
 	gameBackground.currentLevel = level;
 	gameBackground.y = 0;
 	gameBackground.endOfLevelReached = false;
@@ -272,9 +277,11 @@ let update = function (modifier) {
 };
 
 function isMonsterCaught(hero, monster) {
-	let deltaX = (hero.x+16)-(monster.x+16)  //+16 because x, y are in the top left corner of the sprite
-	let deltaY = (hero.y+16)-(monster.y+16)  // sprite is 32x32, so +16 is the center
-	return((deltaX*deltaX+deltaY*deltaY)<500)  //900 = 30 squared
+	if (hero.isFlying && monster.isFlying) {
+		let deltaX = (hero.x+16)-(monster.x+16)  //+16 because x, y are in the top left corner of the sprite
+		let deltaY = (hero.y+16)-(monster.y+16)  // sprite is 32x32, so +16 is the center
+		return((deltaX*deltaX+deltaY*deltaY)<500)  //900 = 30 squared
+	}
 }
 
 let birdGenerator = function (birdsArray,nBirds, x, y) {
@@ -287,6 +294,7 @@ let birdGenerator = function (birdsArray,nBirds, x, y) {
 };
 
 let updateHero = function(modifier){
+	if (!hero.isFlying) return;
 	if (38 in keysDown) { // Player holding up
 		hero.y -= hero.speed * modifier;
 	}
@@ -328,14 +336,16 @@ let addBirdToArray = function(birdsArray, x, y) {
 }
 
 let updateGoblin = function(modifier){
-	monster.y += monster.speed * modifier;
-	if(monster.y < 0 ) mosnster.y = 0;	 //Should not happen
-	if(monster.y > SCREEN_HEIGHT - SPRITE_SIZE) monsterWon=true;
+	if (monster.isFlying) {
+		monster.y += monster.speed * modifier;
+		if(monster.y < 0 ) mosnster.y = 0;	 //Should not happen
+		if(monster.y > SCREEN_HEIGHT - SPRITE_SIZE) monsterWon=true;
+	}
 };
 
 let updateBackground = function(background, modifier){
-	if (!background.endOfLevelReached){
-		background.y += background.speed * modifier;
+	if(background.isFlying && !background.endOfLevelReached){
+			background.y += background.speed * modifier;
 	}
 };
 
@@ -346,11 +356,11 @@ let render = function () {
 	 	drawBackground(gameBackground);
 	}
 
-	if (heroReady) {
+	if (heroReady && hero.isFlying) {
 		ctx.drawImage(heroImage, hero.x, hero.y);
 	}
 
-	if (monsterReady) {
+	if (monsterReady && monster.isFlying) {
 		ctx.drawImage(monsterImage, monster.x, monster.y);
 	}
 
@@ -365,13 +375,16 @@ let render = function () {
 };
 
 let handleCollisions = function() {
-	allSwordsArray.forEach(sword=> {if(sword.isFlying) {
-		    allBirdsArray.forEach(bird=>{if(bird.isFlying) {
+	allBirdsArray.forEach(bird=>{if(bird.isFlying) {
 		    if(isMonsterCaught(hero, bird)) {
 		    	bird.isFlying = false
-				monstersCaught=monstersCaught-10;
-		    }	
-			if(isMonsterCaught(sword, bird)) {
+				gameover()
+		    }
+		}
+	})
+	allSwordsArray.forEach(sword=> {if(sword.isFlying) {
+		    allBirdsArray.forEach(bird=>{if(bird.isFlying) {
+		    if(isMonsterCaught(sword, bird)) {
 				sword.isFlying = false
 				bird.isFlying = false
 				monstersCaught=monstersCaught+5;
@@ -380,8 +393,8 @@ let handleCollisions = function() {
 	}})
 }
 
-let renderAll = function(swordsArray){
-	swordsArray.forEach(sword => sword.draw(ctx))
+let renderAll = function(elements){
+	elements.forEach(element => element.draw(ctx))
 }
 
 let drawBackground = function (background){
@@ -445,8 +458,20 @@ let drawBackground = function (background){
 				}
 			}	
 		}
-
 }
+
+let gameover = function() {
+	showGameover()
+	hero.isFlying = false;
+	monster.isFlying = false;
+	gameBackground.isFlying = false;
+} 
+
+let showGameover = function() {
+	let animationDiv = document.getElementById("gameover");
+	animationDiv.classList.remove("gameover_hidden");
+	animationDiv.classList.add("gameover_visible");
+} 
 
 // The main game loop
 let main = function () {
