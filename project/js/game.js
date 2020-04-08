@@ -8,6 +8,60 @@ const CANVAS_WIDTH = 16; //width of canvas in sprites
 const CANVAS_HEIGHT = 15;  //height of canvas in sprites
 canvas.width = CANVAS_WIDTH*SPRITE_SIZE;
 canvas.height = CANVAS_HEIGHT*SPRITE_SIZE;
+const HIGH_SCORE_KEY = "HighScore";
+
+//Global variables
+var allSwordsArray = [];
+var allBirdsArray = [];
+
+//Level
+let level ='';
+
+let monstersCaught = 0;
+let monsterWon = false;
+let canFireNow = true;
+let gameOver = false;
+
+class GarbageCollector {
+  constructor() { 
+  	this.speed = 10;
+  	this.y=0;
+  	}
+  update(modifier) {
+  		this.y += this.speed * modifier;
+  		//console.log("update "+this.y)
+  		if(this.y > 30 ) {
+	    	//start collecting garbage objects
+	    	this.y = 0
+	    	let oldSize = allSwordsArray.length
+	    	allSwordsArray = allSwordsArray.filter(function(item) {
+    			return item.isFlying
+			})
+			allBirdsArray = allBirdsArray.filter(function(item) {
+    			return item.isFlying
+			})
+			//console.log("Collected GarbageCollector objects="+(oldSize-allSwordsArray.length))
+		}
+  }
+}
+
+var garbageCollector= new GarbageCollector()
+
+// Game objects
+var hero = {
+	speed: 128, // movement in pixels per second
+	isFlying: true
+};
+var monster = {
+	speed: 192,
+	isFlying: true
+};
+var gameBackground = {
+	speed: 10,
+	currentLevelLine : 0,
+	y: 0,
+	isFlying: true
+};
 
 document.getElementById("gameContainer").appendChild(canvas);
 
@@ -71,32 +125,6 @@ class Bird {
   }
 }
 
-var allSwordsArray = [];
-var allBirdsArray = [];
-
-class GarbageCollector {
-  constructor() { 
-  	this.speed = 10;
-  	this.y=0;
-  	}
-  update(modifier) {
-  		this.y += this.speed * modifier;
-  		//console.log("update "+this.y)
-  		if(this.y > 30 ) {
-	    	//start collecting garbage objects
-	    	this.y = 0
-	    	let oldSize = allSwordsArray.length
-	    	allSwordsArray = allSwordsArray.filter(function(item) {
-    			return item.isFlying
-			})
-			allBirdsArray = allBirdsArray.filter(function(item) {
-    			return item.isFlying
-			})
-			console.log("Collected GarbageCollector objects="+(oldSize-allSwordsArray.length))
-		}
-  }
-}
-
 //Loading objects
 
 let swordReady = false;
@@ -112,7 +140,6 @@ birdImage.onload = function () {
 	birdReady = true;
 };
 birdImage.src = "images/bird_leo.png";
-
 
 let grassReady = false;
 let grassImage = new Image();
@@ -143,30 +170,6 @@ monsterImage.onload = function () {
 	monsterReady = true;
 };
 monsterImage.src = "images/monster.png";
-//Level
-let level ='';
-
-// Game objects
-var hero = {
-	speed: 128, // movement in pixels per second
-	isFlying: true
-};
-var monster = {
-	speed: 192,
-	isFlying: true
-};
-var gameBackground = {
-	speed: 10,
-	currentLevelLine : 0,
-	y: 0,
-	isFlying: true
-};
-
-var garbageCollector= new GarbageCollector()
-
-let monstersCaught = 0;
-let monsterWon = false;
-let canFireNow = true;
 
 // Handle keyboard controls
 let keysDown = {};
@@ -242,7 +245,6 @@ function isMonsterCaught(hero, monster) {
 }
 
 let birdGenerator = function (birdsArray,nBirds, x, y) {
-	console.log("birdGen n = "+ nBirds)
 	if(nBirds > 0) {
 		for(i=0; i< nBirds; i++) {
 			setTimeout(addBirdToArray.bind(this,birdsArray,x, y), 500*i)  //500 ms before new bird appearance  
@@ -329,6 +331,9 @@ let render = function () {
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
 	ctx.fillText("Score: " + monstersCaught, 32, 32);
+	if(gameOver) {
+		ctx.fillText("HiScore: " + loadHighScore(), 32, 64);
+	}
 };
 
 let handleCollisions = function() {
@@ -418,6 +423,12 @@ let drawBackground = function (background){
 }
 
 let gameover = function() {
+	gameOver = true;
+	let oldHighScore = loadHighScore();
+	if(monstersCaught>oldHighScore) {
+		saveHighScore(monstersCaught);
+		highScoreCache = monstersCaught; //updating in-memory cache for display
+	}
 	showGameover()
 	hero.isFlying = false;
 	monster.isFlying = false;
@@ -468,6 +479,21 @@ function loadLevel(levelNumber, callback){
         xhttp.open("GET", 'levels/level'+levelNumber+'.txt', true);
         xhttp.send();
 }
+
+function saveHighScore(highScore) {
+    window.localStorage.setItem(HIGH_SCORE_KEY, highScore);
+}
+
+let highScoreCache = -1
+
+function loadHighScore() {
+	if (highScoreCache!=-1) return highScoreCache;
+	highScoreCache = window.localStorage.getItem(HIGH_SCORE_KEY);
+	if (typeof highScoreCache !== 'undefined' && highScoreCache !== null) return highScoreCache;
+	highScoreCache = 0; 
+    return 0;
+}    
+
 // Cross-browser support for requestAnimationFrame
 let w = window;
 requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
