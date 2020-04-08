@@ -143,53 +143,9 @@ monsterImage.onload = function () {
 	monsterReady = true;
 };
 monsterImage.src = "images/monster.png";
-
-let level ='';
 //Level
-let oldlevel =
-'TTTTTTTBTTTTTTTT' +
-'TT............TT' +
-'T..............T' +
-'................' +
-'................' +
-'................' +
-'................' +
-'................' +
-'................' +
-'......B.........' +
-'................' +
-'.............T..' +
-'...T...B........' +
-'....T.......T...' +
-'..T...T...BTT.TT' +
-'..T...T.B..TT.TT' +
-'T..T.T...T..T.T.' +
-'...T...TBT....T.' +
-'.T..B.....T....T' +
-'....T......T....' +
-'.T.....BT.T....T' +
-'..T...T....TT.TT' +
-'T..T.T.B.T..T.T.' +
-'...T...T.T....T.' +
-'.T.....B..T....T' +
-'....T......T....' +
-'.T.....BT.T....T' +
-'....T.T....T....' +
-'....T..B...T....' +
-'....T..B...T....' +
-'....TTTBTTTTTTT.' +
-'....T......T....' +
-'...........T....' +
-'....T......T.TT.' +
-'T...T......TTT.T' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT' +
-'..T...T....TT.TT' +
-'..T.T......T..TT' +
-'..T...T.....T.TT' +
-'..T.....T..TT.TT' +
-'..T...T....TT.TT'
+let level ='';
+
 // Game objects
 var hero = {
 	speed: 128, // movement in pixels per second
@@ -502,7 +458,6 @@ let main = function () {
 	requestAnimationFrame(main);
 };
 
-
 function loadLevel(levelNumber, callback){
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
@@ -513,7 +468,6 @@ function loadLevel(levelNumber, callback){
         xhttp.open("GET", 'levels/level'+levelNumber+'.txt', true);
         xhttp.send();
 }
-
 // Cross-browser support for requestAnimationFrame
 let w = window;
 requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
